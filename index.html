@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communest - Smart House Renting & Estate Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-building"></i>
+                <span>Communest</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+                <li><a href="#estates" class="nav-link" data-section="estates">Estates</a></li>
+                <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Find Your Perfect Home</h1>
+                <p class="hero-subtitle">Discover seamless house renting and estate management for everyone</p>
+                <div class="hero-buttons">
+                    <button class="cta-button" onclick="document.querySelector('[data-section=\"estates\"]').click()">
+                        Explore Properties
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="auth-button secondary" onclick="showAuthModal('login')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                    <button class="auth-button" onclick="showAuthModal('register')">
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-map" id="kenyaMap">
+                    <!-- Kenya Map will be rendered here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction Section -->
+        <section class="intro-section">
+            <div class="section-container">
+                <div class="intro-content">
+                    <h2>About Communest</h2>
+                    <p>
+                        Communest is revolutionizing the way people find and manage rental properties. We bridge the gap between 
+                        tenants seeking quality homes and property managers looking for reliable solutions. Our platform combines 
+                        cutting-edge technology with a human-centered approach to create a trustworthy ecosystem for everyone.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Properties Section -->
+        <section class="featured-section">
+            <div class="section-container">
+                <h2>Featured Properties</h2>
+                <div class="featured-grid">
+                    <div class="property-card">
+                        <div class="property-image">
+                            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop" alt="Modern apartment">
+                            <span class="property-badge">Featured</span>
+                        </div>
+                        <div class="property-details">
+                            <h3>Sunset Heights Apartments</h3>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> Downtown District</p>
+                            <p class="description">Luxury 2-bedroom apartment with modern amenities and city views</p>
+                            <p class="price">KES 250,000<span>/month</span></p>
+                            <button class="rent-button">Apply to Rent</button>
+                        </div>
+                    </div>
+
+                    <div class="property-card">
+                        <div class="property-image">
+                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop" alt="Villa">
+                            <span class="property-badge">New</span>
+                        </div>
+                        <div class="property-details">
+                            <h3>Green Valley Villa</h3>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> Suburban Area</p>
+                            <p class="description">Spacious 4-bedroom villa with garden and parking facilities</p>
+                            <p class="price">KES 320,000<span>/month</span></p>
+                            <button class="rent-button">Apply to Rent</button>
+                        </div>
+                    </div>
+
+                    <div class="property-card">
+                        <div class="property-image">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop" alt="Penthouse">
+                            <span class="property-badge">Premium</span>
+                        </div>
+                        <div class="property-details">
+                            <h3>Prime Plaza Penthouse</h3>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> Business Hub</p>
+                            <p class="description">Exclusive 3-bedroom penthouse with state-of-the-art features</p>
+                            <p class="price">KES 450,000<span>/month</span></p>
+                            <button class="rent-button">Apply to Rent</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="section-container">
+                <h2>Why Choose Communest</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h3>5000+</h3>
+                        <p>Available Properties</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>50K+</h3>
+                        <p>Happy Tenants</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>100%</h3>
+                        <p>Verified Properties</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>24/7</h3>
+                        <p>Customer Support</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="benefits-section">
+            <div class="section-container">
+                <h2>Benefits for Everyone</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>For Tenants</h3>
+                        <ul>
+                            <li>Easy property search & filtering</li>
+                            <li>Transparent pricing & terms</li>
+                            <li>Secure transactions</li>
+                            <li>Direct landlord communication</li>
+                        </ul>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>For Managers</h3>
+                        <ul>
+                            <li>Efficient property management</li>
+                            <li>Tenant screening tools</li>
+                            <li>Automated rent collection</li>
+                            <li>Maintenance tracking</li>
+                        </ul>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>For Everyone</h3>
+                        <ul>
+                            <li>Community-driven platform</li>
+                            <li>Transparent feedback system</li>
+                            <li>Secure payment solutions</li>
+                            <li>Legal compliance support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Estates Section -->
+    <section id="estates" class="section">
+        <div class="section-container">
+            <div class="estates-header">
+                <h1>Available Properties</h1>
+                <p>Browse through our extensive collection of verified rental properties</p>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>Location</label>
+                    <select class="filter-select">
+                        <option value="">All Locations</option>
+                        <option value="downtown">Downtown District</option>
+                        <option value="suburban">Suburban Area</option>
+                        <option value="business">Business Hub</option>
+                        <option value="residential">Residential Zone</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <select class="filter-select">
+                        <option value="">Any Price</option>
+                        <option value="under2000">Under $2,000</option>
+                        <option value="2000-3000">$2,000 - $3,000</option>
+                        <option value="3000-4000">$3,000 - $4,000</option>
+                        <option value="above4000">Above $4,000</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Property Type</label>
+                    <select class="filter-select">
+                        <option value="">All Types</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="penthouse">Penthouse</option>
+                        <option value="townhouse">Townhouse</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="estates-grid">
+                <!-- Property 1 -->
+                <div class="estate-card">
+                    <div class="estate-image">
+                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop" alt="Property">
+                        <div class="estate-overlay">
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="estate-content">
+                        <h3>Sunset Heights Apartments</h3>
+                        <p class="estate-location"><i class="fas fa-map-marker-alt"></i> Downtown District</p>
+                        <p class="estate-description">Modern 2-bedroom apartment with contemporary design, fully furnished, and equipped with smart home technology.</p>
+                        <div class="estate-features">
+                            <span><i class="fas fa-bed"></i> 2 Beds</span>
+                            <span><i class="fas fa-bath"></i> 2 Baths</span>
+                            <span><i class="fas fa-ruler-combined"></i> 1,200 sqft</span>
+                        </div>
+                        <p class="estate-price">KES 250,000/month</p>
+                        <button class="apply-rent-btn">Apply to Rent</button>
+                    </div>
+                </div>
+
+                <!-- Property 2 -->
+                <div class="estate-card">
+                    <div class="estate-image">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop" alt="Property">
+                        <div class="estate-overlay">
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="estate-content">
+                        <h3>Green Valley Villa</h3>
+                        <p class="estate-location"><i class="fas fa-map-marker-alt"></i> Suburban Area</p>
+                        <p class="estate-description">Spacious 4-bedroom villa with private garden, parking space, and access to community amenities.</p>
+                        <div class="estate-features">
+                            <span><i class="fas fa-bed"></i> 4 Beds</span>
+                            <span><i class="fas fa-bath"></i> 3 Baths</span>
+                            <span><i class="fas fa-ruler-combined"></i> 2,500 sqft</span>
+                        </div>
+                        <p class="estate-price">KES 320,000/month</p>
+                        <button class="apply-rent-btn">Apply to Rent</button>
+                    </div>
+                </div>
+
+                <!-- Property 3 -->
+                <div class="estate-card">
+                    <div class="estate-image">
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop" alt="Property">
+                        <div class="estate-overlay">
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="estate-content">
+                        <h3>Prime Plaza Penthouse</h3>
+                        <p class="estate-location"><i class="fas fa-map-marker-alt"></i> Business Hub</p>
+                        <p class="estate-description">Exclusive penthouse with panoramic city views, premium finishes, and exclusive access to rooftop facilities.</p>
+                        <div class="estate-features">
+                            <span><i class="fas fa-bed"></i> 3 Beds</span>
+                            <span><i class="fas fa-bath"></i> 3 Baths</span>
+                            <span><i class="fas fa-ruler-combined"></i> 2,000 sqft</span>
+                        </div>
+                        <p class="estate-price">KES 450,000/month</p>
+                        <button class="apply-rent-btn">Apply to Rent</button>
+                    </div>
+                </div>
+
+                <!-- Property 4 -->
+                <div class="estate-card">
+                    <div class="estate-image">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop" alt="Property">
+                        <div class="estate-overlay">
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="estate-content">
+                        <h3>Riverside Residences</h3>
+                        <p class="estate-location"><i class="fas fa-map-marker-alt"></i> Waterfront Zone</p>
+                        <p class="estate-description">Beautiful waterfront apartments with scenic views, balconies, and access to riverside recreational areas.</p>
+                        <div class="estate-features">
+                            <span><i class="fas fa-bed"></i> 3 Beds</span>
+                            <span><i class="fas fa-bath"></i> 2 Baths</span>
+                            <span><i class="fas fa-ruler-combined"></i> 1,600 sqft</span>
+                        </div>
+                        <p class="estate-price">KES 290,000/month</p>
+                        <button class="apply-rent-btn">Apply to Rent</button>
+                    </div>
+                </div>
+
+                <!-- Property 5 -->
+                <div class="estate-card">
+                    <div class="estate-image">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9b2b6aab2e47?w=400&h=300&fit=crop" alt="Property">
+                        <div class="estate-overlay">
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="estate-content">
+                        <h3>Metropolitan Lofts</h3>
+                        <p class="estate-location"><i class="fas fa-map-marker-alt"></i> Arts District</p>
+                        <p class="estate-description">Stylish lofts in converted historic buildings, industrial design, high ceilings, and trendy neighborhood location.</p>
+                        <div class="estate-features">
+                            <span><i class="fas fa-bed"></i> 1 Bed</span>
+                            <span><i class="fas fa-bath"></i> 1 Bath</span>
+                            <span><i class="fas fa-ruler-combined"></i> 900 sqft</span>
+                        </div>
+                        <p class="estate-price">KES 180,000/month</p>
+                        <button class="apply-rent-btn">Apply to Rent</button>
+                    </div>
+                </div>
+
+                <!-- Property 6 -->
+                <div class="estate-card">
+                    <div class="estate-image">
+                        <img src="https://images.unsplash.com/photo-1512021270449-e82920d69307?w=400&h=300&fit=crop" alt="Property">
+                        <div class="estate-overlay">
+                            <button class="view-details-btn">View Details</button>
+                        </div>
+                    </div>
+                    <div class="estate-content">
+                        <h3>Executive Townhouses</h3>
+                        <p class="estate-location"><i class="fas fa-map-marker-alt"></i> Residential Zone</p>
+                        <p class="estate-description">Premium townhouses with private entrances, gated community, 24/7 security, and excellent neighborhood schools.</p>
+                        <div class="estate-features">
+                            <span><i class="fas fa-bed"></i> 3 Beds</span>
+                            <span><i class="fas fa-bath"></i> 2 Baths</span>
+                            <span><i class="fas fa-ruler-combined"></i> 1,800 sqft</span>
+                        </div>
+                        <p class="estate-price">KES 310,000/month</p>
+                        <button class="apply-rent-btn">Apply to Rent</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="section-container">
+            <div class="about-header">
+                <h1>About Communest</h1>
+                <p>Building trust in the rental housing market</p>
+            </div>
+
+            <!-- Purpose Section -->
+            <div class="about-section-card">
+                <div class="about-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h2>Our Purpose</h2>
+                <p>
+                    Communest exists to transform the rental housing market by creating a transparent, efficient, and trustworthy 
+                    platform that connects tenants, property managers, and estate administrators. We recognize the challenges faced by 
+                    all stakeholders in the rental market and provide innovative solutions that benefit everyone equally.
+                </p>
+            </div>
+
+            <!-- Mission Section -->
+            <div class="about-section-card">
+                <div class="about-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h2>Our Mission</h2>
+                <p>
+                    To empower individuals and organizations with technology that simplifies house rental and estate management, 
+                    ensuring fair practices, transparent communication, and secure transactions. We strive to eliminate information 
+                    asymmetry and create a community where everyone can find quality housing or manage properties with confidence.
+                </p>
+            </div>
+
+            <!-- Vision Section -->
+            <div class="about-section-card">
+                <div class="about-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h2>Our Vision</h2>
+                <p>
+                    A world where finding and managing rental properties is seamless, secure, and fair. We envision Communest as the 
+                    global standard for digital estate management, where technology enables better decisions, relationships are built 
+                    on trust, and everyone has access to quality housing solutions regardless of their background.
+                </p>
+            </div>
+
+            <!-- Benefits Breakdown -->
+            <div class="about-benefits">
+                <h2>Benefits for All Stakeholders</h2>
+                
+                <div class="benefit-breakdown">
+                    <h3><i class="fas fa-home"></i> For Tenants</h3>
+                    <ul>
+                        <li>Access to a wide range of verified rental properties in one place</li>
+                        <li>Advanced filtering options to find properties matching your specific needs and budget</li>
+                        <li>Transparent pricing with no hidden fees or surprise charges</li>
+                        <li>Secure payment methods and contractual protection</li>
+                        <li>Direct communication channels with property managers</li>
+                        <li>Community reviews and ratings to guide your decisions</li>
+                        <li>Legal support and tenant rights information</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-breakdown">
+                    <h3><i class="fas fa-briefcase"></i> For Property Managers</h3>
+                    <ul>
+                        <li>Powerful listing management tools to showcase properties effectively</li>
+                        <li>Automated tenant screening and background verification</li>
+                        <li>Streamlined rent collection and payment processing</li>
+                        <li>Maintenance request tracking and coordination</li>
+                        <li>Tenant communication portal for efficient management</li>
+                        <li>Analytics and reporting tools to optimize property performance</li>
+                        <li>Access to a growing pool of qualified tenants</li>
+                    </ul>
+                </div>
+
+                <div class="benefit-breakdown">
+                    <h3><i class="fas fa-users"></i> For Everyone</h3>
+                    <ul>
+                        <li>A secure ecosystem built on transparency and accountability</li>
+                        <li>Community-driven ratings and feedback system</li>
+                        <li>Standardized contracts and legal compliance support</li>
+                        <li>24/7 customer support and dispute resolution</li>
+                        <li>Data security and privacy protection</li>
+                        <li>Fair pricing mechanisms and market transparency</li>
+                        <li>Opportunities to participate in a growing real estate community</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Core Values -->
+            <div class="core-values">
+                <h2>Our Core Values</h2>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <h4>Transparency</h4>
+                        <p>All information is clear, accurate, and accessible to all users</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Trust</h4>
+                        <p>We verify properties and users to ensure a secure community</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Fairness</h4>
+                        <p>Equal treatment and opportunity for all participants</p>
+                    </div>
+                    <div class="value-card">
+                        <h4>Innovation</h4>
+                        <p>Continuous improvement through technology and user feedback</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-building"></i> Communest</h4>
+                    <p>Your trusted platform for smart house renting and estate management.</p>
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home" onclick="switchSection('home')">Home</a></li>
+                        <li><a href="#estates" onclick="switchSection('estates')">Estates</a></li>
+                        <li><a href="#about" onclick="switchSection('about')">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Report Issue</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookies</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:info@communest.com">info@communest.com</a></li>
+                        <li><i class="fas fa-phone"></i> <a href="tel:+1234567890">+1 (234) 567-890</a></li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Main Street, City, Country</li>
+                        <li><i class="fas fa-clock"></i> 24/7 Support Available</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Communest. All rights reserved. | Building trust in property rental.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget" id="chatbotWidget">
+        <div class="chatbot-toggle" id="chatbotToggle" onclick="toggleChatbot()">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>Communest Support</h3>
+                <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="chatbot-message bot">
+                    <p>👋 Welcome to Communest! How can we help you today?</p>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chatbotInput" placeholder="Type your message..." class="chatbot-input" onkeypress="handleChatbotInput(event)">
+                <button class="chatbot-send" onclick="sendChatbotMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
