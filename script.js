@@ -9,8 +9,6 @@ const hamburger = document.querySelector(".hamburger");
 const navMenu = document.querySelector(".nav-menu");
 const filterSelects = document.querySelectorAll(".filter-select");
 const rentButtons = document.querySelectorAll(".rent-button, .apply-rent-btn");
-const chatbotToggle = document.getElementById("chatbotToggle");
-const chatbotWindow = document.getElementById("chatbotWindow");
 const kenyaMapContainer = document.getElementById("kenyaMap");
 
 // ========== Initialization ==========
@@ -24,9 +22,9 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeHamburgerMenu();
   initializeRentButtons();
   initializeFilterListeners();
-  initializeChatbot();
   addSmoothScrolling();
   logPageInfo();
+  updateAuthButtons();
 });
 
 // ========== Kenya Map Rendering ==========
@@ -151,99 +149,6 @@ function initializeHamburgerMenu() {
   });
 }
 
-// ========== Chatbot Functionality ==========
-function initializeChatbot() {
-  const chatbotToggle = document.getElementById("chatbotToggle");
-  if (chatbotToggle) {
-    chatbotToggle.addEventListener("click", toggleChatbot);
-  }
-  console.log("✓ Chatbot initialized");
-}
-
-function toggleChatbot() {
-  const chatbotWindow = document.getElementById("chatbotWindow");
-  if (chatbotWindow) {
-    chatbotWindow.classList.toggle("active");
-  }
-}
-
-function handleChatbotInput(event) {
-  if (event.key === "Enter") {
-    sendChatbotMessage();
-  }
-}
-
-function sendChatbotMessage() {
-  const chatbotInput = document.getElementById("chatbotInput");
-  const chatbotMessages = document.getElementById("chatbotMessages");
-
-  if (!chatbotInput.value.trim()) return;
-
-  const userMessage = chatbotInput.value;
-
-  // Add user message
-  const userMessageDiv = document.createElement("div");
-  userMessageDiv.className = "chatbot-message user";
-  userMessageDiv.innerHTML = `<p>${escapeHtml(userMessage)}</p>`;
-  chatbotMessages.appendChild(userMessageDiv);
-
-  // Clear input
-  chatbotInput.value = "";
-
-  // Simulate bot response
-  setTimeout(() => {
-    const botResponse = getChatbotResponse(userMessage);
-    const botMessageDiv = document.createElement("div");
-    botMessageDiv.className = "chatbot-message bot";
-    botMessageDiv.innerHTML = `<p>${botResponse}</p>`;
-    chatbotMessages.appendChild(botMessageDiv);
-
-    // Auto scroll to bottom
-    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-  }, 500);
-
-  // Auto scroll to bottom
-  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-}
-
-function getChatbotResponse(message) {
-  const lowerMessage = message.toLowerCase();
-
-  // Define chatbot responses
-  const responses = {
-    hello:
-      "👋 Hello! Welcome to Communest. How can I help you find your perfect home?",
-    hi: "👋 Hi there! Looking for properties in Kenya? I can help!",
-    properties:
-      "🏠 We have over 5000 properties available across Kenya. Visit our Estates page to browse!",
-    price:
-      "💰 Our prices in Kenyan Shillings range from KES 180,000 to KES 450,000+ per month.",
-    contact:
-      "📞 You can reach us at info@communest.com or call +1 (234) 567-890. We're available 24/7!",
-    nairobi:
-      "🏙️ We have many properties in Nairobi! Check out our Estates section to see available options.",
-    help: "🆘 I can help you with information about properties, pricing, contact details, and more. What would you like to know?",
-    rent: '📋 To apply for rent, click the "Apply to Rent" button on any property card. Our team will contact you shortly!',
-    verify:
-      "✅ All our properties are 100% verified. We ensure transparency and trust in every transaction.",
-    about:
-      "ℹ️ Communest is a digital platform making house renting and estate management seamless for everyone. Visit our About page to learn more!",
-    features:
-      "⭐ We offer: property verification, secure payments, direct landlord communication, and 24/7 support!",
-    default:
-      "🤔 That's a great question! For more detailed information, please visit our website or contact our support team.",
-  };
-
-  // Check for keywords
-  for (const [key, response] of Object.entries(responses)) {
-    if (lowerMessage.includes(key)) {
-      return response;
-    }
-  }
-
-  return responses.default;
-}
-
 function escapeHtml(text) {
   const map = {
     "&": "&amp;",
@@ -257,15 +162,158 @@ function escapeHtml(text) {
 
 // ========== Authentication Modal ==========
 function showAuthModal(type) {
-  const message =
-    type === "login"
-      ? "Sign In\n\nEnter your email and password to access your account.\n\nEmail: (not implemented - demo only)\nPassword: (not implemented - demo only)\n\nFor now, you can browse properties as a guest!"
-      : "Create Account\n\nJoin Communest to manage your rentals or property search.\n\nThis registration is a demo. Full functionality coming soon!\n\nBenefits:\n✓ Save favorite properties\n✓ Track applications\n✓ Direct messaging\n✓ Manage your account";
-
-  alert(message);
-  console.log(
-    `✓ ${type === "login" ? "Sign In" : "Registration"} dialog opened`,
+  const modal = document.getElementById("authModal");
+  const loginTab = document.getElementById("loginTab");
+  const registerTab = document.getElementById("registerTab");
+  const loginBtn = document.querySelector('.tab-button[onclick*="login"]');
+  const registerBtn = document.querySelector(
+    '.tab-button[onclick*="register"]',
   );
+
+  if (type === "login") {
+    loginTab.classList.add("active");
+    registerTab.classList.remove("active");
+    loginBtn.classList.add("active");
+    registerBtn.classList.remove("active");
+  } else {
+    registerTab.classList.add("active");
+    loginTab.classList.remove("active");
+    registerBtn.classList.add("active");
+    loginBtn.classList.remove("active");
+  }
+
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById("authModal");
+  modal.style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+function switchAuthTab(type) {
+  const loginTab = document.getElementById("loginTab");
+  const registerTab = document.getElementById("registerTab");
+  const loginBtn = document.querySelector('.tab-button[onclick*="login"]');
+  const registerBtn = document.querySelector(
+    '.tab-button[onclick*="register"]',
+  );
+
+  if (type === "login") {
+    loginTab.classList.add("active");
+    registerTab.classList.remove("active");
+    loginBtn.classList.add("active");
+    registerBtn.classList.remove("active");
+  } else {
+    registerTab.classList.add("active");
+    loginTab.classList.remove("active");
+    registerBtn.classList.add("active");
+    loginBtn.classList.remove("active");
+  }
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const users = JSON.parse(localStorage.getItem("communestUsers") || "[]");
+  const user = users.find((u) => u.email === email && u.password === password);
+
+  if (user) {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    alert("Login successful! Welcome back, " + user.name);
+    closeAuthModal();
+    updateAuthButtons();
+  } else {
+    alert("Invalid email or password");
+  }
+}
+
+function handleRegister(event) {
+  event.preventDefault();
+  const name = document.getElementById("registerName").value;
+  const email = document.getElementById("registerEmail").value;
+  const password = document.getElementById("registerPassword").value;
+  const confirmPassword = document.getElementById(
+    "registerConfirmPassword",
+  ).value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("communestUsers") || "[]");
+  const existingUser = users.find((u) => u.email === email);
+
+  if (existingUser) {
+    alert("Email already registered");
+    return;
+  }
+
+  const newUser = { name, email, password };
+  users.push(newUser);
+  localStorage.setItem("communestUsers", JSON.stringify(users));
+  localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+  alert("Registration successful! Welcome to Communest, " + name);
+  closeAuthModal();
+  updateAuthButtons();
+}
+
+function updateAuthButtons() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const authContainer = document.querySelector(".nav-auth");
+
+  if (currentUser) {
+    authContainer.innerHTML = `
+      <span class="user-greeting">Welcome, ${currentUser.name}</span>
+      <button class="auth-button" onclick="logout()">Logout</button>
+    `;
+  } else {
+    authContainer.innerHTML = `
+      <button class="auth-button secondary" onclick="showAuthModal('login')">
+        <i class="fas fa-sign-in-alt"></i>
+        Sign In
+      </button>
+      <button class="auth-button" onclick="showAuthModal('register')">
+        <i class="fas fa-user-plus"></i>
+        Register
+      </button>
+    `;
+  }
+}
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  alert("Logged out successfully");
+  updateAuthButtons();
+}
+
+// Close modal when clicking outside
+window.onclick = function (event) {
+  const modal = document.getElementById("authModal");
+  if (event.target === modal) {
+    closeAuthModal();
+  }
+};
+
+function togglePassword(inputId) {
+  const input = document.getElementById(inputId);
+  const toggleBtn = input.nextElementSibling;
+  const icon = toggleBtn.querySelector("i");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
 }
 
 // ========== Navigation ==========
@@ -526,10 +574,8 @@ window.Communest = {
   getPropertyStats: getPropertyStats,
   validateRentalApplication: validateRentalApplication,
   showRentDialog: showRentDialog,
-  toggleChatbot: toggleChatbot,
-  sendChatbotMessage: sendChatbotMessage,
-  handleChatbotInput: handleChatbotInput,
   showAuthModal: showAuthModal,
+  togglePassword: togglePassword,
 };
 
 // ========== Initialize Animations on Page Load ==========
