@@ -1,590 +1,1352 @@
-// ========================================
-// COMMUNEST - INTERACTIVE JAVASCRIPT
-// ========================================
-
-// ========== DOM Elements ==========
-const navLinks = document.querySelectorAll(".nav-link");
-const sections = document.querySelectorAll(".section");
-const hamburger = document.querySelector(".hamburger");
-const navMenu = document.querySelector(".nav-menu");
-const filterSelects = document.querySelectorAll(".filter-select");
-const rentButtons = document.querySelectorAll(".rent-button, .apply-rent-btn");
-const kenyaMapContainer = document.getElementById("kenyaMap");
-
-// ========== Initialization ==========
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("✓ Communest platform loaded successfully");
-  console.log("✓ All interactive features are ready");
-  console.log("✓ Version: 1.0.0");
-
-  renderKenyaMap();
-  initializeNavigation();
-  initializeHamburgerMenu();
-  initializeRentButtons();
-  initializeFilterListeners();
-  addSmoothScrolling();
-  logPageInfo();
-  updateAuthButtons();
-});
-
-// ========== Kenya Map Rendering ==========
-function renderKenyaMap() {
-  if (!kenyaMapContainer) return;
-
-  const kenyaMapSvg = `
-    <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
-        <defs>
-            <linearGradient id="kenyaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#00A8E8;stop-opacity:0.8" />
-                <stop offset="100%" style="stop-color:#64B5F6;stop-opacity:0.6" />
-            </linearGradient>
-        </defs>
-        
-        <!-- Background -->
-        <rect width="400" height="500" fill="#112240"/>
-        
-        <!-- Kenya mainland shape -->
-        <path d="M 180 80 L 220 70 L 240 90 L 250 130 L 260 170 L 280 200 L 290 240 L 280 280 L 260 300 L 240 310 L 200 330 L 160 340 L 130 320 L 110 280 L 100 240 L 90 200 L 85 160 L 95 120 L 120 90 Z" 
-              fill="url(#kenyaGradient)" stroke="#00A8E8" stroke-width="2" opacity="0.9"/>
-        
-        <!-- Major cities markers -->
-        <circle cx="140" cy="200" r="6" fill="#FF6B6B" stroke="#00A8E8" stroke-width="2"/>
-        <text x="140" y="220" text-anchor="middle" fill="#E8EBF0" font-size="11" font-weight="bold">Nairobi</text>
-        
-        <circle cx="110" cy="130" r="5" fill="#FFD93D" stroke="#00A8E8" stroke-width="1.5"/>
-        <text x="110" y="115" text-anchor="middle" fill="#E8EBF0" font-size="9">Kisumu</text>
-        
-        <circle cx="220" cy="140" r="5" fill="#FFD93D" stroke="#00A8E8" stroke-width="1.5"/>
-        <text x="220" y="125" text-anchor="middle" fill="#E8EBF0" font-size="9">Nakuru</text>
-        
-        <circle cx="260" cy="280" r="5" fill="#FFD93D" stroke="#00A8E8" stroke-width="1.5"/>
-        <text x="260" y="300" text-anchor="middle" fill="#E8EBF0" font-size="9">Mombasa</text>
-        
-        <!-- Decorative elements -->
-        <circle cx="140" cy="200" r="12" fill="none" stroke="#00A8E8" stroke-width="1" opacity="0.3" style="animation: pulse 2s ease-in-out infinite;"/>
-        
-        <!-- Title -->
-        <text x="200" y="430" text-anchor="middle" fill="#00A8E8" font-size="14" font-weight="bold">Kenya Real Estate Map</text>
-        <text x="200" y="450" text-anchor="middle" fill="#64B5F6" font-size="11">Discover properties nationwide</text>
-        
-        <style>
-            @keyframes pulse {
-                0%, 100% { opacity: 0.3; r: 12; }
-                50% { opacity: 0.8; r: 16; }
-            }
-        </style>
-    </svg>
-    `;
-
-  kenyaMapContainer.innerHTML = kenyaMapSvg;
-  console.log("✓ Kenya map rendered successfully");
-}
-
-// ========== Navigation ==========
-function initializeNavigation() {
-  navLinks.forEach((link) => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const sectionId = this.getAttribute("data-section");
-      switchSection(sectionId);
-
-      // Close hamburger menu on mobile
-      if (navMenu.classList.contains("active")) {
-        hamburger.classList.remove("active");
-        navMenu.classList.remove("active");
-      }
-    });
-  });
-}
-
-function switchSection(sectionId) {
-  // Remove active class from all sections
-  sections.forEach((section) => {
-    section.classList.remove("active");
-  });
-
-  // Remove active class from all nav links
-  navLinks.forEach((link) => {
-    link.classList.remove("active");
-  });
-
-  // Add active class to selected section
-  const selectedSection = document.getElementById(sectionId);
-  if (selectedSection) {
-    selectedSection.classList.add("active");
-
-    // Add active class to corresponding nav link
-    const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
-    if (activeLink) {
-      activeLink.classList.add("active");
-    }
-
-    // Scroll to top smoothly
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-
-    console.log(
-      `✓ Switched to: ${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)} section`,
-    );
-  }
-}
-
-// ========== Hamburger Menu ==========
-function initializeHamburgerMenu() {
-  if (hamburger) {
-    hamburger.addEventListener("click", function () {
-      this.classList.toggle("active");
-      navMenu.classList.toggle("active");
-    });
-  }
-
-  // Close menu when clicking on nav links
-  navLinks.forEach((link) => {
-    link.addEventListener("click", function () {
-      hamburger.classList.remove("active");
-      navMenu.classList.remove("active");
-    });
-  });
-}
-
-function escapeHtml(text) {
-  const map = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-// ========== Authentication Modal ==========
-function showAuthModal(type) {
-  const modal = document.getElementById("authModal");
-  const loginTab = document.getElementById("loginTab");
-  const registerTab = document.getElementById("registerTab");
-  const loginBtn = document.querySelector('.tab-button[onclick*="login"]');
-  const registerBtn = document.querySelector(
-    '.tab-button[onclick*="register"]',
-  );
-
-  if (type === "login") {
-    loginTab.classList.add("active");
-    registerTab.classList.remove("active");
-    loginBtn.classList.add("active");
-    registerBtn.classList.remove("active");
-  } else {
-    registerTab.classList.add("active");
-    loginTab.classList.remove("active");
-    registerBtn.classList.add("active");
-    loginBtn.classList.remove("active");
-  }
-
-  modal.style.display = "block";
-  document.body.style.overflow = "hidden";
-}
-
-function closeAuthModal() {
-  const modal = document.getElementById("authModal");
-  modal.style.display = "none";
-  document.body.style.overflow = "auto";
-}
-
-function switchAuthTab(type) {
-  const loginTab = document.getElementById("loginTab");
-  const registerTab = document.getElementById("registerTab");
-  const loginBtn = document.querySelector('.tab-button[onclick*="login"]');
-  const registerBtn = document.querySelector(
-    '.tab-button[onclick*="register"]',
-  );
-
-  if (type === "login") {
-    loginTab.classList.add("active");
-    registerTab.classList.remove("active");
-    loginBtn.classList.add("active");
-    registerBtn.classList.remove("active");
-  } else {
-    registerTab.classList.add("active");
-    loginTab.classList.remove("active");
-    registerBtn.classList.add("active");
-    loginBtn.classList.remove("active");
-  }
-}
-
-function handleLogin(event) {
-  event.preventDefault();
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-
-  const users = JSON.parse(localStorage.getItem("communestUsers") || "[]");
-  const user = users.find((u) => u.email === email && u.password === password);
-
-  if (user) {
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    alert("Login successful! Welcome back, " + user.name);
-    closeAuthModal();
-    updateAuthButtons();
-  } else {
-    alert("Invalid email or password");
-  }
-}
-
-function handleRegister(event) {
-  event.preventDefault();
-  const name = document.getElementById("registerName").value;
-  const email = document.getElementById("registerEmail").value;
-  const password = document.getElementById("registerPassword").value;
-  const confirmPassword = document.getElementById(
-    "registerConfirmPassword",
-  ).value;
-
-  if (password !== confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
-
-  const users = JSON.parse(localStorage.getItem("communestUsers") || "[]");
-  const existingUser = users.find((u) => u.email === email);
-
-  if (existingUser) {
-    alert("Email already registered");
-    return;
-  }
-
-  const newUser = { name, email, password };
-  users.push(newUser);
-  localStorage.setItem("communestUsers", JSON.stringify(users));
-  localStorage.setItem("currentUser", JSON.stringify(newUser));
-
-  alert("Registration successful! Welcome to Communest, " + name);
-  closeAuthModal();
-  updateAuthButtons();
-}
-
-function updateAuthButtons() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const authContainer = document.querySelector(".nav-auth");
-
-  if (currentUser) {
-    authContainer.innerHTML = `
-      <span class="user-greeting">Welcome, ${currentUser.name}</span>
-      <button class="auth-button" onclick="logout()">Logout</button>
-    `;
-  } else {
-    authContainer.innerHTML = `
-      <button class="auth-button secondary" onclick="showAuthModal('login')">
-        <i class="fas fa-sign-in-alt"></i>
-        Sign In
-      </button>
-      <button class="auth-button" onclick="showAuthModal('register')">
-        <i class="fas fa-user-plus"></i>
-        Register
-      </button>
-    `;
-  }
-}
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  alert("Logged out successfully");
-  updateAuthButtons();
-}
-
-// Close modal when clicking outside
-window.onclick = function (event) {
-  const modal = document.getElementById("authModal");
-  if (event.target === modal) {
-    closeAuthModal();
-  }
-};
-
-function togglePassword(inputId) {
-  const input = document.getElementById(inputId);
-  const toggleBtn = input.nextElementSibling;
-  const icon = toggleBtn.querySelector("i");
-
-  if (input.type === "password") {
-    input.type = "text";
-    icon.classList.remove("fa-eye");
-    icon.classList.add("fa-eye-slash");
-  } else {
-    input.type = "password";
-    icon.classList.remove("fa-eye-slash");
-    icon.classList.add("fa-eye");
-  }
-}
-
-// ========== Navigation ==========
-function initializeRentButtons() {
-  rentButtons.forEach((button) => {
-    button.addEventListener("click", function (e) {
-      e.preventDefault();
-      showRentDialog();
-    });
-  });
-}
-
-function showRentDialog() {
-  // Create a simple alert for demonstration
-  const dialogMessage = `
-✓ Application Submitted Successfully!
-
-Thank you for your interest. A member of our team will contact you shortly to discuss your application and answer any questions you may have.
-
-Features:
-• Transparent verification process
-• Secure documentation handling
-• Fast response time
-• Expert guidance
-
-For immediate assistance, contact us at: info@communest.com
-    `;
-
-  alert(dialogMessage);
-  console.log("✓ Rental application dialog triggered");
-}
-
-// ========== Filter Listeners ==========
-function initializeFilterListeners() {
-  filterSelects.forEach((select) => {
-    select.addEventListener("change", function () {
-      const filterType = this.previousElementSibling.textContent.toLowerCase();
-      const filterValue = this.value || "all";
-
-      console.log(`✓ Filter applied: ${filterType} = ${filterValue}`);
-
-      // Animate the filter application
-      const estatesGrid = document.querySelector(".estates-grid");
-      if (estatesGrid) {
-        estatesGrid.style.opacity = "0.8";
-        setTimeout(() => {
-          estatesGrid.style.opacity = "1";
-        }, 300);
-      }
-    });
-  });
-}
-
-// ========== Smooth Scrolling for Anchor Links ==========
-function addSmoothScrolling() {
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      const href = this.getAttribute("href");
-
-      // Skip if it's a section navigation link (already handled)
-      if (!this.classList.contains("nav-link") && href !== "#") {
-        e.preventDefault();
-
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      }
-    });
-  });
-}
-
-// ========== Scroll Event Listeners ==========
-window.addEventListener("scroll", function () {
-  // Add scroll effect to navbar
-  const navbar = document.querySelector(".navbar");
-  if (window.scrollY > 50) {
-    navbar.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.5)";
-  } else {
-    navbar.style.boxShadow = "var(--shadow-md)";
-  }
-
-  // Optional: Highlight nav link based on scroll position
-  updateActiveNavOnScroll();
-});
-
-function updateActiveNavOnScroll() {
-  const scrollPosition = window.scrollY;
-
-  sections.forEach((section) => {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-
-    if (
-      scrollPosition >= sectionTop - 100 &&
-      scrollPosition < sectionTop + sectionHeight
-    ) {
-      const sectionId = section.getAttribute("id");
-
-      navLinks.forEach((link) => {
-        link.classList.remove("active");
-      });
-
-      const activeLink = document.querySelector(
-        `[data-section="${sectionId}"]`,
-      );
-      if (activeLink) {
-        activeLink.classList.add("active");
-      }
-    }
-  });
-}
-
-// ========== Intersection Observer for Animations ==========
-function initializeIntersectionObserver() {
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -100px 0px",
-  };
-
-  const observer = new IntersectionObserver(function (entries) {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = "1";
-        entry.target.style.transform = "translateY(0)";
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Observe cards and sections
-  document
-    .querySelectorAll(
-      ".property-card, .estate-card, .stat-card, .benefit-item, .value-card",
-    )
-    .forEach((element) => {
-      element.style.opacity = "0";
-      element.style.transform = "translateY(20px)";
-      element.style.transition =
-        "opacity 0.6s ease-out, transform 0.6s ease-out";
-      observer.observe(element);
-    });
-}
-
-// ========== Keyboard Navigation ==========
-document.addEventListener("keydown", function (e) {
-  // Escape key to close mobile menu
-  if (e.key === "Escape") {
-    if (navMenu && navMenu.classList.contains("active")) {
-      hamburger.classList.remove("active");
-      navMenu.classList.remove("active");
-    }
-  }
-
-  // Number keys for quick navigation (1=Home, 2=Estates, 3=About)
-  if (e.ctrlKey || e.metaKey) {
-    switch (e.key) {
-      case "1":
-        switchSection("home");
-        e.preventDefault();
-        break;
-      case "2":
-        switchSection("estates");
-        e.preventDefault();
-        break;
-      case "3":
-        switchSection("about");
-        e.preventDefault();
-        break;
-    }
-  }
-});
-
-// ========== Theme Toggle (Future Feature) ==========
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute("data-theme");
-  const newTheme = currentTheme === "dark" ? "light" : "dark";
-
-  document.documentElement.setAttribute("data-theme", newTheme);
-  localStorage.setItem("communest-theme", newTheme);
-
-  console.log(`✓ Theme switched to: ${newTheme}`);
-}
-
-// ========== Utility Functions ==========
-function logPageInfo() {
-  console.log(
-    "%c🏢 Communest Platform",
-    "font-size: 16px; font-weight: bold; color: #00A8E8;",
-  );
-  console.log("%cPlatform Status: Online", "color: #10B981; font-size: 12px;");
-  console.log("%cKeyboard Shortcuts:", "font-weight: bold; color: #00A8E8;");
-  console.log("  • Ctrl+1: Go to Home");
-  console.log("  • Ctrl+2: Go to Estates");
-  console.log("  • Ctrl+3: Go to About");
-  console.log("  • Esc: Close mobile menu");
-  console.log(
-    "%cThank you for visiting Communest!",
-    "color: #64B5F6; font-style: italic;",
+const { useState } = React;
+
+// Icons as SVG components
+const HomeIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+  </svg>
+);
+
+const Building2Icon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
+    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
+    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path>
+    <path d="M10 6h4"></path>
+    <path d="M10 10h4"></path>
+    <path d="M10 14h4"></path>
+    <path d="M10 18h4"></path>
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M12 16v-4"></path>
+    <path d="M12 8h.01"></path>
+  </svg>
+);
+
+const MenuIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="4" x2="20" y1="12" y2="12"></line>
+    <line x1="4" x2="20" y1="6" y2="6"></line>
+    <line x1="4" x2="20" y1="18" y2="18"></line>
+  </svg>
+);
+
+const XIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M18 6 6 18"></path>
+    <path d="m6 6 12 12"></path>
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="11" cy="11" r="8"></circle>
+    <path d="m21 21-4.3-4.3"></path>
+  </svg>
+);
+
+const MapPinIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+    <circle cx="12" cy="10" r="3"></circle>
+  </svg>
+);
+
+const BedIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M2 4v16"></path>
+    <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
+    <path d="M2 17h20"></path>
+    <path d="M6 8V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path>
+  </svg>
+);
+
+const BathIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1 2.5L9 10"></path>
+    <path d="M21 12V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4"></path>
+    <path d="M7 21a2 2 0 0 0 2-2v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1a2 2 0 0 0 2 2"></path>
+    <path d="M3 12h18"></path>
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path>
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+  </svg>
+);
+
+const InstagramIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+  </svg>
+);
+
+const LinkedinIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
+  </svg>
+);
+
+// Navbar Component
+function Navbar({ currentPage, setCurrentPage }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <nav className="navbar">
+      <div className="navbar-content">
+        <a
+          href="#"
+          className="navbar-brand"
+          onClick={(e) => {
+            e.preventDefault();
+            setCurrentPage("home");
+            setMobileMenuOpen(false);
+          }}
+        >
+          <Building2Icon />
+          <span>Communest</span>
+        </a>
+
+        <div className="navbar-links">
+          <a
+            href="#"
+            className={`nav-link ${currentPage === "home" ? "active" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("home");
+            }}
+          >
+            Home
+          </a>
+          <a
+            href="#"
+            className={`nav-link ${currentPage === "estates" ? "active" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("estates");
+            }}
+          >
+            Estates
+          </a>
+          <a
+            href="#"
+            className={`nav-link ${currentPage === "about" ? "active" : ""}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("about");
+            }}
+          >
+            About
+          </a>
+          <a
+            href="#"
+            className="btn-primary"
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("auth");
+            }}
+          >
+            Sign In
+          </a>
+        </div>
+
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? <XIcon /> : <MenuIcon />}
+        </button>
+      </div>
+
+      {mobileMenuOpen && (
+        <div className="mobile-menu active">
+          <a
+            href="#"
+            className="mobile-nav-link"
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("home");
+              setMobileMenuOpen(false);
+            }}
+          >
+            Home
+          </a>
+          <a
+            href="#"
+            className="mobile-nav-link"
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("estates");
+              setMobileMenuOpen(false);
+            }}
+          >
+            Estates
+          </a>
+          <a
+            href="#"
+            className="mobile-nav-link"
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("about");
+              setMobileMenuOpen(false);
+            }}
+          >
+            About
+          </a>
+          <a
+            href="#"
+            className="btn-primary btn-full mt-2"
+            onClick={(e) => {
+              e.preventDefault();
+              setCurrentPage("auth");
+              setMobileMenuOpen(false);
+            }}
+          >
+            Sign In
+          </a>
+        </div>
+      )}
+    </nav>
   );
 }
 
-function getRandomProperty() {
-  const properties = [
-    "Sunset Heights Apartments",
-    "Green Valley Villa",
-    "Prime Plaza Penthouse",
-    "Riverside Residences",
-    "Metropolitan Lofts",
-    "Executive Townhouses",
+// Home Page Component
+function HomePage({ setCurrentPage }) {
+  const cities = [
+    "Nairobi",
+    "Mombasa",
+    "Kisumu",
+    "Nakuru",
+    "Eldoret",
+    "Thika",
+    "Kitale",
+    "Malindi",
   ];
 
-  return properties[Math.floor(Math.random() * properties.length)];
+  return (
+    <div>
+      <section className="hero">
+        <div className="container">
+          <h1>
+            Welcome to <span className="highlight">Communest</span>
+          </h1>
+          <p style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
+            Your Ultimate Solution for House Management & House Hunting in Kenya
+          </p>
+          <p
+            style={{
+              fontSize: "1.125rem",
+              color: "#94a3b8",
+              maxWidth: "900px",
+              margin: "0 auto 2rem",
+            }}
+          >
+            Whether you're looking for your dream home in Nairobi, Mombasa,
+            Kisumu, or Nakuru, or managing your estate, Communest makes it
+            simple and efficient.
+          </p>
+          <div className="hero-buttons">
+            <button
+              className="btn-primary"
+              onClick={() => setCurrentPage("estates")}
+              style={{ padding: "1rem 2rem", fontSize: "1.125rem" }}
+            >
+              🔍 Find Your Home
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={() => setCurrentPage("estates")}
+            >
+              🏢 List Your Estate
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-alt">
+        <div className="container">
+          <h2>Why Choose Communest?</h2>
+          <div className="grid grid-3">
+            <div className="card card-dark">
+              <div className="icon-wrapper">
+                <HomeIcon />
+              </div>
+              <h3>House Hunting Made Easy</h3>
+              <p>
+                Browse thousands of available properties across Kenya. Filter by
+                location, price, and amenities to find your perfect match.
+              </p>
+            </div>
+            <div className="card card-dark">
+              <div className="icon-wrapper">
+                <Building2Icon />
+              </div>
+              <h3>Estate Management</h3>
+              <p>
+                Manage your properties efficiently. Track tenants, handle
+                maintenance requests, and communicate seamlessly.
+              </p>
+            </div>
+            <div className="card card-dark">
+              <div className="icon-wrapper">
+                <HomeIcon />
+              </div>
+              <h3>Tenant Portal</h3>
+              <p>
+                Access events, announcements, submit inquiries and complaints
+                all in one convenient platform.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <h2>Popular Locations</h2>
+          <div className="grid grid-4">
+            {cities.map((city) => (
+              <div key={city} className="card" style={{ cursor: "pointer" }}>
+                <h3>{city}</h3>
+                <p>Explore properties</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="section"
+        style={{
+          background: "linear-gradient(135deg, #1e40af 0%, #1e293b 100%)",
+        }}
+      >
+        <div className="container text-center">
+          <h2>Ready to Get Started?</h2>
+          <p style={{ fontSize: "1.125rem", marginBottom: "2rem" }}>
+            Join thousands of Kenyans who trust Communest for their housing
+            needs
+          </p>
+          <button
+            className="btn"
+            style={{
+              backgroundColor: "white",
+              color: "#1e40af",
+              padding: "1rem 2rem",
+              fontSize: "1.125rem",
+            }}
+            onClick={() => setCurrentPage("auth")}
+          >
+            Create Your Account
+          </button>
+        </div>
+      </section>
+    </div>
+  );
 }
 
-function getPropertyStats() {
-  return {
-    totalProperties: 5000,
-    happyTenants: 50000,
-    verificationRate: 100,
-    supportAvailability: "24/7",
-  };
+// Estates Page Component
+function EstatesPage() {
+  const [userType, setUserType] = useState("outsider");
+  const [showListingForm, setShowListingForm] = useState(false);
+
+  const vacantHouses = [
+    {
+      id: 1,
+      name: "Modern Apartment in Kilimani",
+      location: "Kilimani, Nairobi",
+      price: 45000,
+      bedrooms: 2,
+      bathrooms: 2,
+      size: 85,
+      image:
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    },
+    {
+      id: 2,
+      name: "Beachfront Villa",
+      location: "Nyali, Mombasa",
+      price: 120000,
+      bedrooms: 4,
+      bathrooms: 3,
+      size: 220,
+      image:
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+    },
+    {
+      id: 3,
+      name: "Cozy Studio Apartment",
+      location: "Westlands, Nairobi",
+      price: 28000,
+      bedrooms: 1,
+      bathrooms: 1,
+      size: 45,
+      image:
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+    },
+    {
+      id: 4,
+      name: "Family House with Garden",
+      location: "Karen, Nairobi",
+      price: 95000,
+      bedrooms: 3,
+      bathrooms: 2,
+      size: 180,
+      image:
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
+    },
+    {
+      id: 5,
+      name: "Luxury Penthouse",
+      location: "Upperhill, Nairobi",
+      price: 150000,
+      bedrooms: 3,
+      bathrooms: 3,
+      size: 200,
+      image:
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
+    },
+    {
+      id: 6,
+      name: "Affordable 2-Bedroom",
+      location: "Thika, Kiambu",
+      price: 22000,
+      bedrooms: 2,
+      bathrooms: 1,
+      size: 65,
+      image:
+        "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop",
+    },
+  ];
+
+  const events = [
+    {
+      id: 1,
+      title: "Community Clean-Up Day",
+      date: "2026-05-20",
+      location: "Estate Grounds",
+    },
+    {
+      id: 2,
+      title: "Annual General Meeting",
+      date: "2026-05-25",
+      location: "Community Hall",
+    },
+    {
+      id: 3,
+      title: "Residents BBQ Night",
+      date: "2026-06-01",
+      location: "Swimming Pool Area",
+    },
+  ];
+
+  const announcements = [
+    {
+      id: 1,
+      title: "Water Maintenance Schedule",
+      date: "2026-05-15",
+      content: "Water will be off on Saturday from 8AM-2PM",
+    },
+    {
+      id: 2,
+      title: "New Security Measures",
+      date: "2026-05-12",
+      content: "Enhanced access control system installed at all gates",
+    },
+    {
+      id: 3,
+      title: "Garbage Collection Update",
+      date: "2026-05-10",
+      content: "Collection now happens on Tuesday and Friday mornings",
+    },
+  ];
+
+  return (
+    <div className="section">
+      <div className="container">
+        <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem" }}>Estates</h1>
+
+        <div className="tab-buttons mb-4">
+          <button
+            className={`btn ${userType === "outsider" ? "btn-blue" : "btn-gray"}`}
+            onClick={() => setUserType("outsider")}
+          >
+            View Properties
+          </button>
+          <button
+            className={`btn ${userType === "tenant" ? "btn-blue" : "btn-gray"}`}
+            onClick={() => setUserType("tenant")}
+          >
+            Tenant Portal
+          </button>
+          <button
+            className="btn btn-green"
+            onClick={() => setShowListingForm(!showListingForm)}
+          >
+            ➕ List Your Estate
+          </button>
+        </div>
+
+        {showListingForm && (
+          <div className="card mb-4">
+            <h2>List Your Estate</h2>
+            <form>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Estate Name</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Enter estate name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Location</label>
+                  <select className="form-select">
+                    <option>Select location</option>
+                    <option>Nairobi</option>
+                    <option>Mombasa</option>
+                    <option>Kisumu</option>
+                    <option>Nakuru</option>
+                    <option>Eldoret</option>
+                    <option>Thika</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Price (KES/month)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    placeholder="e.g., 45000"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Bedrooms</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    placeholder="e.g., 2"
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Bathrooms</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    placeholder="e.g., 2"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Size (sqm)</label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    placeholder="e.g., 85"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea
+                  className="form-textarea"
+                  rows="4"
+                  placeholder="Describe your property..."
+                ></textarea>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Contact Email</label>
+                  <input
+                    type="email"
+                    className="form-input"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Contact Phone</label>
+                  <input
+                    type="tel"
+                    className="form-input"
+                    placeholder="+254 7XX XXX XXX"
+                  />
+                </div>
+              </div>
+              <button type="submit" className="btn btn-blue btn-full">
+                Submit Listing
+              </button>
+            </form>
+          </div>
+        )}
+
+        {userType === "outsider" && (
+          <div>
+            <h2 className="mb-4">Available Properties</h2>
+            <div className="grid grid-3">
+              {vacantHouses.map((house) => (
+                <div key={house.id} className="property-card">
+                  <img
+                    src={house.image}
+                    alt={house.name}
+                    className="property-image"
+                  />
+                  <div className="property-content">
+                    <h3 className="property-title">{house.name}</h3>
+                    <p className="property-location">
+                      <MapPinIcon /> {house.location}
+                    </p>
+                    <div className="property-features">
+                      <span>
+                        <BedIcon /> {house.bedrooms} beds
+                      </span>
+                      <span>
+                        <BathIcon /> {house.bathrooms} baths
+                      </span>
+                      <span>📏 {house.size}m²</span>
+                    </div>
+                    <div className="property-footer">
+                      <div className="property-price">
+                        KES {house.price.toLocaleString()}
+                        <small>/mo</small>
+                      </div>
+                      <button className="btn btn-blue">View</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {userType === "tenant" && (
+          <div>
+            <div className="card mb-4">
+              <h2 className="mb-3">📅 Upcoming Events</h2>
+              {events.map((event) => (
+                <div
+                  key={event.id}
+                  className="card-dark mb-2"
+                  style={{ padding: "1rem" }}
+                >
+                  <h3 style={{ fontSize: "1.125rem" }}>{event.title}</h3>
+                  <p className="mb-1">
+                    Date: {new Date(event.date).toLocaleDateString("en-KE")}
+                  </p>
+                  <p>Location: {event.location}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="card mb-4">
+              <h2 className="mb-3">🔔 Announcements</h2>
+              {announcements.map((announcement) => (
+                <div
+                  key={announcement.id}
+                  className="card-dark mb-2"
+                  style={{ padding: "1rem" }}
+                >
+                  <h3 style={{ fontSize: "1.125rem" }}>{announcement.title}</h3>
+                  <p
+                    className="mb-1"
+                    style={{ fontSize: "0.875rem", color: "#94a3b8" }}
+                  >
+                    {new Date(announcement.date).toLocaleDateString("en-KE")}
+                  </p>
+                  <p>{announcement.content}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="card">
+              <h2 className="mb-3">📝 Submit Inquiry or Complaint</h2>
+              <form>
+                <div className="form-group">
+                  <label className="form-label">Type</label>
+                  <select className="form-select">
+                    <option>Inquiry</option>
+                    <option>Complaint</option>
+                    <option>Maintenance Request</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Subject</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Brief subject"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Message</label>
+                  <textarea
+                    className="form-textarea"
+                    rows="5"
+                    placeholder="Describe your inquiry or complaint..."
+                  ></textarea>
+                </div>
+                <button type="submit" className="btn btn-blue btn-full">
+                  📤 Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
-// ========== Form Validation (Future Feature) ==========
-function validateRentalApplication(formData) {
-  const requiredFields = ["name", "email", "phone", "propertyId"];
+// About Page Component
+function AboutPage() {
+  return (
+    <div className="section">
+      <div className="container">
+        <h1
+          style={{
+            fontSize: "3rem",
+            textAlign: "center",
+            marginBottom: "2rem",
+          }}
+        >
+          About Communest
+        </h1>
+        <p
+          style={{
+            fontSize: "1.125rem",
+            textAlign: "center",
+            maxWidth: "900px",
+            margin: "0 auto 3rem",
+            color: "#cbd5e1",
+          }}
+        >
+          Communest is Kenya's leading platform for house management and house
+          hunting. We connect property seekers with their dream homes and
+          provide estate managers with powerful tools to manage their properties
+          efficiently.
+        </p>
 
-  for (let field of requiredFields) {
-    if (!formData[field] || formData[field].trim() === "") {
-      console.warn(`✗ Validation failed: ${field} is required`);
-      return false;
-    }
-  }
+        <div className="card mb-4">
+          <h2 className="text-center mb-3">Our Mission</h2>
+          <p
+            style={{
+              fontSize: "1.125rem",
+              textAlign: "center",
+              maxWidth: "800px",
+              margin: "0 auto",
+              color: "#cbd5e1",
+            }}
+          >
+            To revolutionize the housing sector in Kenya by making property
+            management seamless and house hunting stress-free. We believe every
+            Kenyan deserves access to quality housing and efficient property
+            management services.
+          </p>
+        </div>
 
-  console.log("✓ Form validation passed");
-  return true;
+        <h2 className="text-center mb-4">Why Communest is Perfect for You</h2>
+        <div className="grid grid-4 mb-4">
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              🛡️
+            </div>
+            <h3>Verified Listings</h3>
+            <p>
+              All properties are verified to ensure authenticity and quality,
+              protecting you from scams.
+            </p>
+          </div>
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              ⏰
+            </div>
+            <h3>24/7 Support</h3>
+            <p>
+              Our customer support team is always available to assist you with
+              any queries or issues.
+            </p>
+          </div>
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              👥
+            </div>
+            <h3>Community Focus</h3>
+            <p>
+              Build connections with fellow residents through events,
+              announcements, and community features.
+            </p>
+          </div>
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              🏆
+            </div>
+            <h3>Trusted Platform</h3>
+            <p>
+              Thousands of satisfied customers across Kenya trust Communest for
+              their housing needs.
+            </p>
+          </div>
+        </div>
+
+        <h2 className="text-center mb-4">Key Features</h2>
+        <div className="grid grid-2 mb-4">
+          <div className="card">
+            <h3 className="mb-3">For House Hunters</h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              <li className="mb-2">
+                • Browse thousands of verified properties across Kenya
+              </li>
+              <li className="mb-2">
+                • Advanced search filters by location, price, and amenities
+              </li>
+              <li className="mb-2">• Direct contact with property managers</li>
+              <li className="mb-2">
+                • Virtual tours and detailed property information
+              </li>
+              <li className="mb-2">• Save favorites and compare properties</li>
+            </ul>
+          </div>
+          <div className="card">
+            <h3 className="mb-3">For Estate Managers</h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              <li className="mb-2">
+                • Easy property listing and management tools
+              </li>
+              <li className="mb-2">
+                • Tenant communication and announcement systems
+              </li>
+              <li className="mb-2">
+                • Track maintenance requests and complaints
+              </li>
+              <li className="mb-2">
+                • Event management for community building
+              </li>
+              <li className="mb-2">• Analytics and reporting dashboard</li>
+            </ul>
+          </div>
+          <div className="card">
+            <h3 className="mb-3">For Tenants</h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              <li className="mb-2">
+                • Access to estate events and community activities
+              </li>
+              <li className="mb-2">• Real-time announcements and updates</li>
+              <li className="mb-2">• Submit inquiries and complaints easily</li>
+              <li className="mb-2">• Online rent payment tracking</li>
+              <li className="mb-2">
+                • Community forum and neighbor connections
+              </li>
+            </ul>
+          </div>
+          <div className="card">
+            <h3 className="mb-3">Security & Trust</h3>
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              <li className="mb-2">• Secure payment processing</li>
+              <li className="mb-2">• Identity verification for all users</li>
+              <li className="mb-2">• Property ownership verification</li>
+              <li className="mb-2">• Encrypted data protection</li>
+              <li className="mb-2">• Dispute resolution support</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2 className="text-center mb-4">Get in Touch</h2>
+        <div className="grid grid-3 mb-4">
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              ✉️
+            </div>
+            <h3>Email</h3>
+            <p>support@communest.co.ke</p>
+            <p>info@communest.co.ke</p>
+          </div>
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              📞
+            </div>
+            <h3>Phone</h3>
+            <p>+254 700 123 456</p>
+            <p>+254 733 987 654</p>
+          </div>
+          <div className="card text-center">
+            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              📍
+            </div>
+            <h3>Office</h3>
+            <p>Westlands, Nairobi</p>
+            <p>Kenya</p>
+          </div>
+        </div>
+
+        <div className="card text-center">
+          <h2 className="mb-3">Connect With Us</h2>
+          <div
+            className="social-icons"
+            style={{ justifyContent: "center", marginBottom: "1rem" }}
+          >
+            <a
+              href="https://facebook.com/communest"
+              className="social-icon"
+              style={{ width: "48px", height: "48px" }}
+            >
+              <FacebookIcon />
+            </a>
+            <a
+              href="https://twitter.com/communest"
+              className="social-icon"
+              style={{ width: "48px", height: "48px" }}
+            >
+              <TwitterIcon />
+            </a>
+            <a
+              href="https://instagram.com/communest"
+              className="social-icon"
+              style={{ width: "48px", height: "48px" }}
+            >
+              <InstagramIcon />
+            </a>
+            <a
+              href="https://linkedin.com/company/communest"
+              className="social-icon"
+              style={{ width: "48px", height: "48px" }}
+            >
+              <LinkedinIcon />
+            </a>
+          </div>
+          <p style={{ color: "#94a3b8" }}>
+            Follow us on social media for the latest updates, property listings,
+            and housing tips!
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-// ========== Performance Monitoring ==========
-window.addEventListener("load", function () {
-  if (window.performance) {
-    const perfData = window.performance.timing;
-    const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+// Auth Page Component
+function AuthPage() {
+  const [isLogin, setIsLogin] = useState(true);
 
-    console.log(`✓ Page load time: ${pageLoadTime}ms`);
-  }
-});
+  return (
+    <div className="auth-container">
+      <div className="auth-box">
+        <div className="auth-header">
+          <div className="auth-icon">
+            <Building2Icon />
+          </div>
+          <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
+            {isLogin ? "Welcome Back" : "Create Account"}
+          </h1>
+          <p style={{ color: "#94a3b8" }}>
+            {isLogin
+              ? "Sign in to access your Communest account"
+              : "Join Communest and find your dream home in Kenya"}
+          </p>
+        </div>
 
-// ========== Export Functions for External Use ==========
-window.Communest = {
-  switchSection: switchSection,
-  toggleTheme: toggleTheme,
-  getRandomProperty: getRandomProperty,
-  getPropertyStats: getPropertyStats,
-  validateRentalApplication: validateRentalApplication,
-  showRentDialog: showRentDialog,
-  showAuthModal: showAuthModal,
-  togglePassword: togglePassword,
-};
+        <div className="auth-form">
+          <form>
+            {!isLogin && (
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Enter your full name"
+                />
+              </div>
+            )}
 
-// ========== Initialize Animations on Page Load ==========
-setTimeout(function () {
-  initializeIntersectionObserver();
-}, 100);
+            <div className="form-group">
+              <label className="form-label">Email Address</label>
+              <input
+                type="email"
+                className="form-input"
+                placeholder="your.email@example.com"
+              />
+            </div>
 
-// ========== Console Welcome Message ==========
-console.log(
-  "%c✓ Communest v1.0.0 Ready",
-  "background: #0A192F; color: #00A8E8; padding: 8px 12px; border-radius: 4px; font-weight: bold;",
-);
+            {!isLogin && (
+              <div className="form-group">
+                <label className="form-label">Phone Number</label>
+                <input
+                  type="tel"
+                  className="form-input"
+                  placeholder="+254 7XX XXX XXX"
+                />
+              </div>
+            )}
+
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-input"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            {!isLogin && (
+              <>
+                <div className="form-group">
+                  <label className="form-label">Confirm Password</label>
+                  <input
+                    type="password"
+                    className="form-input"
+                    placeholder="Confirm your password"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Account Type</label>
+                  <select className="form-select">
+                    <option>Tenant/House Hunter</option>
+                    <option>Estate Manager</option>
+                    <option>Property Owner</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            <button type="submit" className="btn btn-blue btn-full">
+              {isLogin ? "Sign In" : "Create Account"}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            <p>
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+              <a
+                href="#"
+                className="auth-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsLogin(!isLogin);
+                }}
+              >
+                {isLogin ? "Sign Up" : "Sign In"}
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <p
+          className="text-center mt-4"
+          style={{ fontSize: "0.875rem", color: "#94a3b8" }}
+        >
+          By signing up, you agree to our{" "}
+          <a href="#" className="auth-link">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="#" className="auth-link">
+            Privacy Policy
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Footer Component
+function Footer({ setCurrentPage }) {
+  return (
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-grid">
+          <div>
+            <a
+              href="#"
+              className="navbar-brand"
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage("home");
+              }}
+              style={{ marginBottom: "1rem", display: "flex" }}
+            >
+              <Building2Icon />
+              <span>Communest</span>
+            </a>
+            <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
+              Kenya's trusted platform for house hunting and property
+              management. Connecting communities, one home at a time.
+            </p>
+          </div>
+
+          <div>
+            <h3>Quick Links</h3>
+            <ul className="footer-links">
+              <li>
+                <a
+                  href="#"
+                  className="footer-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage("home");
+                  }}
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="footer-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage("estates");
+                  }}
+                >
+                  Estates
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="footer-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage("about");
+                  }}
+                >
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="footer-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage("auth");
+                  }}
+                >
+                  Sign In
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>Contact Us</h3>
+            <ul className="footer-links">
+              <li>
+                <a
+                  href="mailto:support@communest.co.ke"
+                  className="footer-link"
+                >
+                  support@communest.co.ke
+                </a>
+              </li>
+              <li>
+                <a href="tel:+254700123456" className="footer-link">
+                  +254 700 123 456
+                </a>
+              </li>
+              <li style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
+                Westlands, Nairobi
+                <br />
+                Kenya
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>Follow Us</h3>
+            <div className="social-icons mb-2">
+              <a href="https://facebook.com/communest" className="social-icon">
+                <FacebookIcon />
+              </a>
+              <a href="https://twitter.com/communest" className="social-icon">
+                <TwitterIcon />
+              </a>
+              <a href="https://instagram.com/communest" className="social-icon">
+                <InstagramIcon />
+              </a>
+              <a
+                href="https://linkedin.com/company/communest"
+                className="social-icon"
+              >
+                <LinkedinIcon />
+              </a>
+            </div>
+            <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
+              Stay updated with the latest properties and housing news in Kenya
+            </p>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>
+            © {new Date().getFullYear()} Communest Kenya. All rights reserved.
+          </p>
+          <div className="footer-bottom-links">
+            <a href="#" className="footer-link">
+              Privacy Policy
+            </a>
+            <a href="#" className="footer-link">
+              Terms of Service
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// Main App Component
+function App() {
+  const [currentPage, setCurrentPage] = useState("home");
+
+  return (
+    <div
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
+      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+
+      {currentPage === "home" && <HomePage setCurrentPage={setCurrentPage} />}
+      {currentPage === "estates" && <EstatesPage />}
+      {currentPage === "about" && <AboutPage />}
+      {currentPage === "auth" && <AuthPage />}
+
+      <Footer setCurrentPage={setCurrentPage} />
+    </div>
+  );
+}
+
+// Render the app
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
