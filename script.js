@@ -1,6 +1,21 @@
 const { useState } = React;
 
-// Icons as SVG components
+// ─── Pull all static data from index.html ────────────────────────────────────
+const {
+  cities,
+  vacantHouses,
+  events,
+  announcements,
+  locationOptions,
+  contact,
+  social,
+  heroContent,
+  whyChooseUs,
+  aboutFeatures,
+} = window.APP_DATA;
+
+// ─── SVG Icon Components ──────────────────────────────────────────────────────
+
 const HomeIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -40,24 +55,6 @@ const Building2Icon = () => (
   </svg>
 );
 
-const InfoIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="12" cy="12" r="10"></circle>
-    <path d="M12 16v-4"></path>
-    <path d="M12 8h.01"></path>
-  </svg>
-);
-
 const MenuIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -90,23 +87,6 @@ const XIcon = () => (
   >
     <path d="M18 6 6 18"></path>
     <path d="m6 6 12 12"></path>
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="11" cy="11" r="8"></circle>
-    <path d="m21 21-4.3-4.3"></path>
   </svg>
 );
 
@@ -219,9 +199,27 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-// Navbar Component
+// Helper: resolve icon name string from data to a component
+function CardIcon({ name }) {
+  if (name === "building") return <Building2Icon />;
+  return <HomeIcon />;
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
+
 function Navbar({ currentPage, setCurrentPage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navTo = (page) => {
+    setCurrentPage(page);
+    setMobileMenuOpen(false);
+  };
+
+  const links = [
+    { label: "Home", page: "home" },
+    { label: "Estates", page: "estates" },
+    { label: "About", page: "about" },
+  ];
 
   return (
     <nav className="navbar">
@@ -231,8 +229,7 @@ function Navbar({ currentPage, setCurrentPage }) {
           className="navbar-brand"
           onClick={(e) => {
             e.preventDefault();
-            setCurrentPage("home");
-            setMobileMenuOpen(false);
+            navTo("home");
           }}
         >
           <Building2Icon />
@@ -240,42 +237,25 @@ function Navbar({ currentPage, setCurrentPage }) {
         </a>
 
         <div className="navbar-links">
-          <a
-            href="#"
-            className={`nav-link ${currentPage === "home" ? "active" : ""}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setCurrentPage("home");
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="#"
-            className={`nav-link ${currentPage === "estates" ? "active" : ""}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setCurrentPage("estates");
-            }}
-          >
-            Estates
-          </a>
-          <a
-            href="#"
-            className={`nav-link ${currentPage === "about" ? "active" : ""}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setCurrentPage("about");
-            }}
-          >
-            About
-          </a>
+          {links.map(({ label, page }) => (
+            <a
+              key={page}
+              href="#"
+              className={`nav-link ${currentPage === page ? "active" : ""}`}
+              onClick={(e) => {
+                e.preventDefault();
+                navTo(page);
+              }}
+            >
+              {label}
+            </a>
+          ))}
           <a
             href="#"
             className="btn-primary"
             onClick={(e) => {
               e.preventDefault();
-              setCurrentPage("auth");
+              navTo("auth");
             }}
           >
             Sign In
@@ -292,46 +272,25 @@ function Navbar({ currentPage, setCurrentPage }) {
 
       {mobileMenuOpen && (
         <div className="mobile-menu active">
-          <a
-            href="#"
-            className="mobile-nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              setCurrentPage("home");
-              setMobileMenuOpen(false);
-            }}
-          >
-            Home
-          </a>
-          <a
-            href="#"
-            className="mobile-nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              setCurrentPage("estates");
-              setMobileMenuOpen(false);
-            }}
-          >
-            Estates
-          </a>
-          <a
-            href="#"
-            className="mobile-nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              setCurrentPage("about");
-              setMobileMenuOpen(false);
-            }}
-          >
-            About
-          </a>
+          {links.map(({ label, page }) => (
+            <a
+              key={page}
+              href="#"
+              className="mobile-nav-link"
+              onClick={(e) => {
+                e.preventDefault();
+                navTo(page);
+              }}
+            >
+              {label}
+            </a>
+          ))}
           <a
             href="#"
             className="btn-primary btn-full mt-2"
             onClick={(e) => {
               e.preventDefault();
-              setCurrentPage("auth");
-              setMobileMenuOpen(false);
+              navTo("auth");
             }}
           >
             Sign In
@@ -342,28 +301,20 @@ function Navbar({ currentPage, setCurrentPage }) {
   );
 }
 
-// Home Page Component
-function HomePage({ setCurrentPage }) {
-  const cities = [
-    "Nairobi",
-    "Mombasa",
-    "Kisumu",
-    "Nakuru",
-    "Eldoret",
-    "Thika",
-    "Kitale",
-    "Malindi",
-  ];
+// ─── Home Page ────────────────────────────────────────────────────────────────
 
+function HomePage({ setCurrentPage }) {
   return (
     <div>
+      {/* Hero */}
       <section className="hero">
         <div className="container">
           <h1>
-            Welcome to <span className="highlight">Communest</span>
+            Welcome to{" "}
+            <span className="highlight">{heroContent.highlight}</span>
           </h1>
           <p style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
-            Your Ultimate Solution for House Management & House Hunting in Kenya
+            {heroContent.tagline}
           </p>
           <p
             style={{
@@ -373,9 +324,7 @@ function HomePage({ setCurrentPage }) {
               margin: "0 auto 2rem",
             }}
           >
-            Whether you're looking for your dream home in Nairobi, Mombasa,
-            Kisumu, or Nakuru, or managing your estate, Communest makes it
-            simple and efficient.
+            {heroContent.description}
           </p>
           <div className="hero-buttons">
             <button
@@ -395,44 +344,25 @@ function HomePage({ setCurrentPage }) {
         </div>
       </section>
 
+      {/* Why Choose Us */}
       <section className="section section-alt">
         <div className="container">
           <h2>Why Choose Communest?</h2>
           <div className="grid grid-3">
-            <div className="card card-dark">
-              <div className="icon-wrapper">
-                <HomeIcon />
+            {whyChooseUs.map((item, i) => (
+              <div key={i} className="card card-dark">
+                <div className="icon-wrapper">
+                  <CardIcon name={item.icon} />
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
               </div>
-              <h3>House Hunting Made Easy</h3>
-              <p>
-                Browse thousands of available properties across Kenya. Filter by
-                location, price, and amenities to find your perfect match.
-              </p>
-            </div>
-            <div className="card card-dark">
-              <div className="icon-wrapper">
-                <Building2Icon />
-              </div>
-              <h3>Estate Management</h3>
-              <p>
-                Manage your properties efficiently. Track tenants, handle
-                maintenance requests, and communicate seamlessly.
-              </p>
-            </div>
-            <div className="card card-dark">
-              <div className="icon-wrapper">
-                <HomeIcon />
-              </div>
-              <h3>Tenant Portal</h3>
-              <p>
-                Access events, announcements, submit inquiries and complaints
-                all in one convenient platform.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* Popular Locations */}
       <section className="section">
         <div className="container">
           <h2>Popular Locations</h2>
@@ -447,6 +377,7 @@ function HomePage({ setCurrentPage }) {
         </div>
       </section>
 
+      {/* CTA */}
       <section
         className="section"
         style={{
@@ -477,127 +408,18 @@ function HomePage({ setCurrentPage }) {
   );
 }
 
-// Estates Page Component
+// ─── Estates Page ─────────────────────────────────────────────────────────────
+
 function EstatesPage() {
   const [userType, setUserType] = useState("outsider");
   const [showListingForm, setShowListingForm] = useState(false);
-
-  const vacantHouses = [
-    {
-      id: 1,
-      name: "Modern Apartment in Kilimani",
-      location: "Kilimani, Nairobi",
-      price: 45000,
-      bedrooms: 2,
-      bathrooms: 2,
-      size: 85,
-      image:
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-    },
-    {
-      id: 2,
-      name: "Beachfront Villa",
-      location: "Nyali, Mombasa",
-      price: 120000,
-      bedrooms: 4,
-      bathrooms: 3,
-      size: 220,
-      image:
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
-    },
-    {
-      id: 3,
-      name: "Cozy Studio Apartment",
-      location: "Westlands, Nairobi",
-      price: 28000,
-      bedrooms: 1,
-      bathrooms: 1,
-      size: 45,
-      image:
-        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-    },
-    {
-      id: 4,
-      name: "Family House with Garden",
-      location: "Karen, Nairobi",
-      price: 95000,
-      bedrooms: 3,
-      bathrooms: 2,
-      size: 180,
-      image:
-        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
-    },
-    {
-      id: 5,
-      name: "Luxury Penthouse",
-      location: "Upperhill, Nairobi",
-      price: 150000,
-      bedrooms: 3,
-      bathrooms: 3,
-      size: 200,
-      image:
-        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
-    },
-    {
-      id: 6,
-      name: "Affordable 2-Bedroom",
-      location: "Thika, Kiambu",
-      price: 22000,
-      bedrooms: 2,
-      bathrooms: 1,
-      size: 65,
-      image:
-        "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop",
-    },
-  ];
-
-  const events = [
-    {
-      id: 1,
-      title: "Community Clean-Up Day",
-      date: "2026-05-20",
-      location: "Estate Grounds",
-    },
-    {
-      id: 2,
-      title: "Annual General Meeting",
-      date: "2026-05-25",
-      location: "Community Hall",
-    },
-    {
-      id: 3,
-      title: "Residents BBQ Night",
-      date: "2026-06-01",
-      location: "Swimming Pool Area",
-    },
-  ];
-
-  const announcements = [
-    {
-      id: 1,
-      title: "Water Maintenance Schedule",
-      date: "2026-05-15",
-      content: "Water will be off on Saturday from 8AM-2PM",
-    },
-    {
-      id: 2,
-      title: "New Security Measures",
-      date: "2026-05-12",
-      content: "Enhanced access control system installed at all gates",
-    },
-    {
-      id: 3,
-      title: "Garbage Collection Update",
-      date: "2026-05-10",
-      content: "Collection now happens on Tuesday and Friday mornings",
-    },
-  ];
 
   return (
     <div className="section">
       <div className="container">
         <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem" }}>Estates</h1>
 
+        {/* Tab Controls */}
         <div className="tab-buttons mb-4">
           <button
             className={`btn ${userType === "outsider" ? "btn-blue" : "btn-gray"}`}
@@ -619,6 +441,7 @@ function EstatesPage() {
           </button>
         </div>
 
+        {/* Listing Form */}
         {showListingForm && (
           <div className="card mb-4">
             <h2>List Your Estate</h2>
@@ -636,12 +459,9 @@ function EstatesPage() {
                   <label className="form-label">Location</label>
                   <select className="form-select">
                     <option>Select location</option>
-                    <option>Nairobi</option>
-                    <option>Mombasa</option>
-                    <option>Kisumu</option>
-                    <option>Nakuru</option>
-                    <option>Eldoret</option>
-                    <option>Thika</option>
+                    {locationOptions.map((loc) => (
+                      <option key={loc}>{loc}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -714,6 +534,7 @@ function EstatesPage() {
           </div>
         )}
 
+        {/* Property Listings */}
         {userType === "outsider" && (
           <div>
             <h2 className="mb-4">Available Properties</h2>
@@ -753,8 +574,10 @@ function EstatesPage() {
           </div>
         )}
 
+        {/* Tenant Portal */}
         {userType === "tenant" && (
           <div>
+            {/* Events */}
             <div className="card mb-4">
               <h2 className="mb-3">📅 Upcoming Events</h2>
               {events.map((event) => (
@@ -772,26 +595,28 @@ function EstatesPage() {
               ))}
             </div>
 
+            {/* Announcements */}
             <div className="card mb-4">
               <h2 className="mb-3">🔔 Announcements</h2>
-              {announcements.map((announcement) => (
+              {announcements.map((a) => (
                 <div
-                  key={announcement.id}
+                  key={a.id}
                   className="card-dark mb-2"
                   style={{ padding: "1rem" }}
                 >
-                  <h3 style={{ fontSize: "1.125rem" }}>{announcement.title}</h3>
+                  <h3 style={{ fontSize: "1.125rem" }}>{a.title}</h3>
                   <p
                     className="mb-1"
                     style={{ fontSize: "0.875rem", color: "#94a3b8" }}
                   >
-                    {new Date(announcement.date).toLocaleDateString("en-KE")}
+                    {new Date(a.date).toLocaleDateString("en-KE")}
                   </p>
-                  <p>{announcement.content}</p>
+                  <p>{a.content}</p>
                 </div>
               ))}
             </div>
 
+            {/* Inquiry / Complaint Form */}
             <div className="card">
               <h2 className="mb-3">📝 Submit Inquiry or Complaint</h2>
               <form>
@@ -831,8 +656,12 @@ function EstatesPage() {
   );
 }
 
-// About Page Component
+// ─── About Page ───────────────────────────────────────────────────────────────
+
 function AboutPage() {
+  const { trust, forHunters, forManagers, forTenants, security } =
+    aboutFeatures;
+
   return (
     <div className="section">
       <div className="container">
@@ -860,6 +689,7 @@ function AboutPage() {
           efficiently.
         </p>
 
+        {/* Mission */}
         <div className="card mb-4">
           <h2 className="text-center mb-3">Our Mission</h2>
           <p
@@ -878,112 +708,43 @@ function AboutPage() {
           </p>
         </div>
 
+        {/* Trust pillars */}
         <h2 className="text-center mb-4">Why Communest is Perfect for You</h2>
         <div className="grid grid-4 mb-4">
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              🛡️
+          {trust.map((item, i) => (
+            <div key={i} className="card text-center">
+              <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+                {item.icon}
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
             </div>
-            <h3>Verified Listings</h3>
-            <p>
-              All properties are verified to ensure authenticity and quality,
-              protecting you from scams.
-            </p>
-          </div>
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              ⏰
-            </div>
-            <h3>24/7 Support</h3>
-            <p>
-              Our customer support team is always available to assist you with
-              any queries or issues.
-            </p>
-          </div>
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              👥
-            </div>
-            <h3>Community Focus</h3>
-            <p>
-              Build connections with fellow residents through events,
-              announcements, and community features.
-            </p>
-          </div>
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              🏆
-            </div>
-            <h3>Trusted Platform</h3>
-            <p>
-              Thousands of satisfied customers across Kenya trust Communest for
-              their housing needs.
-            </p>
-          </div>
+          ))}
         </div>
 
+        {/* Feature lists */}
         <h2 className="text-center mb-4">Key Features</h2>
         <div className="grid grid-2 mb-4">
-          <div className="card">
-            <h3 className="mb-3">For House Hunters</h3>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              <li className="mb-2">
-                • Browse thousands of verified properties across Kenya
-              </li>
-              <li className="mb-2">
-                • Advanced search filters by location, price, and amenities
-              </li>
-              <li className="mb-2">• Direct contact with property managers</li>
-              <li className="mb-2">
-                • Virtual tours and detailed property information
-              </li>
-              <li className="mb-2">• Save favorites and compare properties</li>
-            </ul>
-          </div>
-          <div className="card">
-            <h3 className="mb-3">For Estate Managers</h3>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              <li className="mb-2">
-                • Easy property listing and management tools
-              </li>
-              <li className="mb-2">
-                • Tenant communication and announcement systems
-              </li>
-              <li className="mb-2">
-                • Track maintenance requests and complaints
-              </li>
-              <li className="mb-2">
-                • Event management for community building
-              </li>
-              <li className="mb-2">• Analytics and reporting dashboard</li>
-            </ul>
-          </div>
-          <div className="card">
-            <h3 className="mb-3">For Tenants</h3>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              <li className="mb-2">
-                • Access to estate events and community activities
-              </li>
-              <li className="mb-2">• Real-time announcements and updates</li>
-              <li className="mb-2">• Submit inquiries and complaints easily</li>
-              <li className="mb-2">• Online rent payment tracking</li>
-              <li className="mb-2">
-                • Community forum and neighbor connections
-              </li>
-            </ul>
-          </div>
-          <div className="card">
-            <h3 className="mb-3">Security & Trust</h3>
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              <li className="mb-2">• Secure payment processing</li>
-              <li className="mb-2">• Identity verification for all users</li>
-              <li className="mb-2">• Property ownership verification</li>
-              <li className="mb-2">• Encrypted data protection</li>
-              <li className="mb-2">• Dispute resolution support</li>
-            </ul>
-          </div>
+          {[
+            { title: "For House Hunters", items: forHunters },
+            { title: "For Estate Managers", items: forManagers },
+            { title: "For Tenants", items: forTenants },
+            { title: "Security & Trust", items: security },
+          ].map(({ title, items }) => (
+            <div key={title} className="card">
+              <h3 className="mb-3">{title}</h3>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                {items.map((item, i) => (
+                  <li key={i} className="mb-2">
+                    • {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
+        {/* Contact */}
         <h2 className="text-center mb-4">Get in Touch</h2>
         <div className="grid grid-3 mb-4">
           <div className="card text-center">
@@ -991,61 +752,50 @@ function AboutPage() {
               ✉️
             </div>
             <h3>Email</h3>
-            <p>support@communest.co.ke</p>
-            <p>info@communest.co.ke</p>
+            {contact.emails.map((e) => (
+              <p key={e}>{e}</p>
+            ))}
           </div>
           <div className="card text-center">
             <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
               📞
             </div>
             <h3>Phone</h3>
-            <p>+254 700 123 456</p>
-            <p>+254 733 987 654</p>
+            {contact.phones.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
           </div>
           <div className="card text-center">
             <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
               📍
             </div>
             <h3>Office</h3>
-            <p>Westlands, Nairobi</p>
-            <p>Kenya</p>
+            <p>{contact.address}</p>
           </div>
         </div>
 
+        {/* Social */}
         <div className="card text-center">
           <h2 className="mb-3">Connect With Us</h2>
           <div
             className="social-icons"
             style={{ justifyContent: "center", marginBottom: "1rem" }}
           >
-            <a
-              href="https://facebook.com/communest"
-              className="social-icon"
-              style={{ width: "48px", height: "48px" }}
-            >
-              <FacebookIcon />
-            </a>
-            <a
-              href="https://twitter.com/communest"
-              className="social-icon"
-              style={{ width: "48px", height: "48px" }}
-            >
-              <TwitterIcon />
-            </a>
-            <a
-              href="https://instagram.com/communest"
-              className="social-icon"
-              style={{ width: "48px", height: "48px" }}
-            >
-              <InstagramIcon />
-            </a>
-            <a
-              href="https://linkedin.com/company/communest"
-              className="social-icon"
-              style={{ width: "48px", height: "48px" }}
-            >
-              <LinkedinIcon />
-            </a>
+            {[
+              { href: social.facebook, Icon: FacebookIcon },
+              { href: social.twitter, Icon: TwitterIcon },
+              { href: social.instagram, Icon: InstagramIcon },
+              { href: social.linkedin, Icon: LinkedinIcon },
+            ].map(({ href, Icon }) => (
+              <a
+                key={href}
+                href={href}
+                className="social-icon"
+                style={{ width: "48px", height: "48px" }}
+              >
+                <Icon />
+              </a>
+            ))}
           </div>
           <p style={{ color: "#94a3b8" }}>
             Follow us on social media for the latest updates, property listings,
@@ -1057,7 +807,8 @@ function AboutPage() {
   );
 }
 
-// Auth Page Component
+// ─── Auth Page ────────────────────────────────────────────────────────────────
+
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -1090,7 +841,6 @@ function AuthPage() {
                 />
               </div>
             )}
-
             <div className="form-group">
               <label className="form-label">Email Address</label>
               <input
@@ -1099,7 +849,6 @@ function AuthPage() {
                 placeholder="your.email@example.com"
               />
             </div>
-
             {!isLogin && (
               <div className="form-group">
                 <label className="form-label">Phone Number</label>
@@ -1110,7 +859,6 @@ function AuthPage() {
                 />
               </div>
             )}
-
             <div className="form-group">
               <label className="form-label">Password</label>
               <input
@@ -1119,7 +867,6 @@ function AuthPage() {
                 placeholder="Enter your password"
               />
             </div>
-
             {!isLogin && (
               <>
                 <div className="form-group">
@@ -1140,7 +887,6 @@ function AuthPage() {
                 </div>
               </>
             )}
-
             <button type="submit" className="btn btn-blue btn-full">
               {isLogin ? "Sign In" : "Create Account"}
             </button>
@@ -1181,12 +927,21 @@ function AuthPage() {
   );
 }
 
-// Footer Component
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
 function Footer({ setCurrentPage }) {
+  const quickLinks = [
+    { label: "Home", page: "home" },
+    { label: "Estates", page: "estates" },
+    { label: "About Us", page: "about" },
+    { label: "Sign In", page: "auth" },
+  ];
+
   return (
     <footer className="footer">
       <div className="container">
         <div className="footer-grid">
+          {/* Brand */}
           <div>
             <a
               href="#"
@@ -1206,102 +961,68 @@ function Footer({ setCurrentPage }) {
             </p>
           </div>
 
+          {/* Quick Links */}
           <div>
             <h3>Quick Links</h3>
             <ul className="footer-links">
-              <li>
-                <a
-                  href="#"
-                  className="footer-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage("home");
-                  }}
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="footer-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage("estates");
-                  }}
-                >
-                  Estates
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="footer-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage("about");
-                  }}
-                >
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="footer-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCurrentPage("auth");
-                  }}
-                >
-                  Sign In
-                </a>
-              </li>
+              {quickLinks.map(({ label, page }) => (
+                <li key={page}>
+                  <a
+                    href="#"
+                    className="footer-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(page);
+                    }}
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* Contact */}
           <div>
             <h3>Contact Us</h3>
             <ul className="footer-links">
-              <li>
-                <a
-                  href="mailto:support@communest.co.ke"
-                  className="footer-link"
-                >
-                  support@communest.co.ke
-                </a>
-              </li>
-              <li>
-                <a href="tel:+254700123456" className="footer-link">
-                  +254 700 123 456
-                </a>
-              </li>
+              {contact.emails.map((e) => (
+                <li key={e}>
+                  <a href={`mailto:${e}`} className="footer-link">
+                    {e}
+                  </a>
+                </li>
+              ))}
+              {contact.phones.map((p) => (
+                <li key={p}>
+                  <a
+                    href={`tel:${p.replace(/\s/g, "")}`}
+                    className="footer-link"
+                  >
+                    {p}
+                  </a>
+                </li>
+              ))}
               <li style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
-                Westlands, Nairobi
-                <br />
-                Kenya
+                {contact.address}
               </li>
             </ul>
           </div>
 
+          {/* Social */}
           <div>
             <h3>Follow Us</h3>
             <div className="social-icons mb-2">
-              <a href="https://facebook.com/communest" className="social-icon">
-                <FacebookIcon />
-              </a>
-              <a href="https://twitter.com/communest" className="social-icon">
-                <TwitterIcon />
-              </a>
-              <a href="https://instagram.com/communest" className="social-icon">
-                <InstagramIcon />
-              </a>
-              <a
-                href="https://linkedin.com/company/communest"
-                className="social-icon"
-              >
-                <LinkedinIcon />
-              </a>
+              {[
+                { href: social.facebook, Icon: FacebookIcon },
+                { href: social.twitter, Icon: TwitterIcon },
+                { href: social.instagram, Icon: InstagramIcon },
+                { href: social.linkedin, Icon: LinkedinIcon },
+              ].map(({ href, Icon }) => (
+                <a key={href} href={href} className="social-icon">
+                  <Icon />
+                </a>
+              ))}
             </div>
             <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
               Stay updated with the latest properties and housing news in Kenya
@@ -1327,7 +1048,8 @@ function Footer({ setCurrentPage }) {
   );
 }
 
-// Main App Component
+// ─── App Root ─────────────────────────────────────────────────────────────────
+
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
 
@@ -1336,17 +1058,15 @@ function App() {
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
       <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-
       {currentPage === "home" && <HomePage setCurrentPage={setCurrentPage} />}
       {currentPage === "estates" && <EstatesPage />}
       {currentPage === "about" && <AboutPage />}
       {currentPage === "auth" && <AuthPage />}
-
       <Footer setCurrentPage={setCurrentPage} />
     </div>
   );
 }
 
-// Render the app
+// Mount
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);

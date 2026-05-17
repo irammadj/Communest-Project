@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Communest - Kenya's House Management & Hunting Platform</title>
+    <meta
+      name="description"
+      content="Communest is Kenya's leading platform for house management and house hunting. Find your dream home in Nairobi, Mombasa, Kisumu, Nakuru and beyond."
+    />
     <link rel="stylesheet" href="style.css" />
 
     <!-- React and ReactDOM from CDN -->
@@ -17,8 +21,244 @@
     ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
+
   <body>
+    <!-- Root mount point for the React application -->
     <div id="root"></div>
+
+    <!-- =====================================================
+         STATIC DATA STORE
+         All application data lives here as JSON.
+         script.js reads these via window.APP_DATA.
+         ===================================================== -->
+    <script id="app-data" type="application/json">
+      {
+        "cities": [
+          "Nairobi",
+          "Mombasa",
+          "Kisumu",
+          "Nakuru",
+          "Eldoret",
+          "Thika",
+          "Kitale",
+          "Malindi"
+        ],
+
+        "vacantHouses": [
+          {
+            "id": 1,
+            "name": "Modern Apartment in Kilimani",
+            "location": "Kilimani, Nairobi",
+            "price": 45000,
+            "bedrooms": 2,
+            "bathrooms": 2,
+            "size": 85,
+            "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop"
+          },
+          {
+            "id": 2,
+            "name": "Beachfront Villa",
+            "location": "Nyali, Mombasa",
+            "price": 120000,
+            "bedrooms": 4,
+            "bathrooms": 3,
+            "size": 220,
+            "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop"
+          },
+          {
+            "id": 3,
+            "name": "Cozy Studio Apartment",
+            "location": "Westlands, Nairobi",
+            "price": 28000,
+            "bedrooms": 1,
+            "bathrooms": 1,
+            "size": 45,
+            "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop"
+          },
+          {
+            "id": 4,
+            "name": "Family House with Garden",
+            "location": "Karen, Nairobi",
+            "price": 95000,
+            "bedrooms": 3,
+            "bathrooms": 2,
+            "size": 180,
+            "image": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop"
+          },
+          {
+            "id": 5,
+            "name": "Luxury Penthouse",
+            "location": "Upperhill, Nairobi",
+            "price": 150000,
+            "bedrooms": 3,
+            "bathrooms": 3,
+            "size": 200,
+            "image": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop"
+          },
+          {
+            "id": 6,
+            "name": "Affordable 2-Bedroom",
+            "location": "Thika, Kiambu",
+            "price": 22000,
+            "bedrooms": 2,
+            "bathrooms": 1,
+            "size": 65,
+            "image": "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop"
+          }
+        ],
+
+        "events": [
+          {
+            "id": 1,
+            "title": "Community Clean-Up Day",
+            "date": "2026-05-20",
+            "location": "Estate Grounds"
+          },
+          {
+            "id": 2,
+            "title": "Annual General Meeting",
+            "date": "2026-05-25",
+            "location": "Community Hall"
+          },
+          {
+            "id": 3,
+            "title": "Residents BBQ Night",
+            "date": "2026-06-01",
+            "location": "Swimming Pool Area"
+          }
+        ],
+
+        "announcements": [
+          {
+            "id": 1,
+            "title": "Water Maintenance Schedule",
+            "date": "2026-05-15",
+            "content": "Water will be off on Saturday from 8AM-2PM"
+          },
+          {
+            "id": 2,
+            "title": "New Security Measures",
+            "date": "2026-05-12",
+            "content": "Enhanced access control system installed at all gates"
+          },
+          {
+            "id": 3,
+            "title": "Garbage Collection Update",
+            "date": "2026-05-10",
+            "content": "Collection now happens on Tuesday and Friday mornings"
+          }
+        ],
+
+        "locationOptions": [
+          "Nairobi",
+          "Mombasa",
+          "Kisumu",
+          "Nakuru",
+          "Eldoret",
+          "Thika"
+        ],
+
+        "contact": {
+          "emails": ["support@communest.co.ke", "info@communest.co.ke"],
+          "phones": ["+254 700 123 456", "+254 733 987 654"],
+          "address": "Westlands, Nairobi, Kenya"
+        },
+
+        "social": {
+          "facebook": "https://facebook.com/communest",
+          "twitter": "https://twitter.com/communest",
+          "instagram": "https://instagram.com/communest",
+          "linkedin": "https://linkedin.com/company/communest"
+        },
+
+        "heroContent": {
+          "title": "Welcome to Communest",
+          "highlight": "Communest",
+          "tagline": "Your Ultimate Solution for House Management & House Hunting in Kenya",
+          "description": "Whether you're looking for your dream home in Nairobi, Mombasa, Kisumu, or Nakuru, or managing your estate, Communest makes it simple and efficient."
+        },
+
+        "whyChooseUs": [
+          {
+            "icon": "home",
+            "title": "House Hunting Made Easy",
+            "text": "Browse thousands of available properties across Kenya. Filter by location, price, and amenities to find your perfect match."
+          },
+          {
+            "icon": "building",
+            "title": "Estate Management",
+            "text": "Manage your properties efficiently. Track tenants, handle maintenance requests, and communicate seamlessly."
+          },
+          {
+            "icon": "home",
+            "title": "Tenant Portal",
+            "text": "Access events, announcements, submit inquiries and complaints all in one convenient platform."
+          }
+        ],
+
+        "aboutFeatures": {
+          "trust": [
+            {
+              "icon": "🛡️",
+              "title": "Verified Listings",
+              "text": "All properties are verified to ensure authenticity and quality, protecting you from scams."
+            },
+            {
+              "icon": "⏰",
+              "title": "24/7 Support",
+              "text": "Our customer support team is always available to assist you with any queries or issues."
+            },
+            {
+              "icon": "👥",
+              "title": "Community Focus",
+              "text": "Build connections with fellow residents through events, announcements, and community features."
+            },
+            {
+              "icon": "🏆",
+              "title": "Trusted Platform",
+              "text": "Thousands of satisfied customers across Kenya trust Communest for their housing needs."
+            }
+          ],
+          "forHunters": [
+            "Browse thousands of verified properties across Kenya",
+            "Advanced search filters by location, price, and amenities",
+            "Direct contact with property managers",
+            "Virtual tours and detailed property information",
+            "Save favorites and compare properties"
+          ],
+          "forManagers": [
+            "Easy property listing and management tools",
+            "Tenant communication and announcement systems",
+            "Track maintenance requests and complaints",
+            "Event management for community building",
+            "Analytics and reporting dashboard"
+          ],
+          "forTenants": [
+            "Access to estate events and community activities",
+            "Real-time announcements and updates",
+            "Submit inquiries and complaints easily",
+            "Online rent payment tracking",
+            "Community forum and neighbor connections"
+          ],
+          "security": [
+            "Secure payment processing",
+            "Identity verification for all users",
+            "Property ownership verification",
+            "Encrypted data protection",
+            "Dispute resolution support"
+          ]
+        }
+      }
+    </script>
+
+    <!-- Bootstrap app data into window before script.js runs -->
+    <script>
+      window.APP_DATA = JSON.parse(
+        document.getElementById("app-data").textContent,
+      );
+    </script>
+
+    <!-- Main React application -->
     <script type="text/babel" src="script.js"></script>
   </body>
 </html>
