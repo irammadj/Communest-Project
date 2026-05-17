@@ -1,11 +1,10 @@
 const { useState } = React;
 
-// ─── Pull all static data from index.html ────────────────────────────────────
+// ─── Pull static data from index.html ────────────────────────────────────────
 const {
   cities,
   vacantHouses,
-  events,
-  announcements,
+  approvedEstates,
   locationOptions,
   contact,
   social,
@@ -14,7 +13,7 @@ const {
   aboutFeatures,
 } = window.APP_DATA;
 
-// ─── SVG Icon Components ──────────────────────────────────────────────────────
+// ─── SVG Icons ────────────────────────────────────────────────────────────────
 
 const HomeIcon = () => (
   <svg
@@ -145,6 +144,23 @@ const BathIcon = () => (
   </svg>
 );
 
+const ArrowLeftIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="m12 19-7-7 7-7"></path>
+    <path d="M19 12H5"></path>
+  </svg>
+);
+
 const FacebookIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +215,6 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-// Resolve icon name from data to component
 function CardIcon({ name }) {
   if (name === "building") return <Building2Icon />;
   return <HomeIcon />;
@@ -209,12 +224,10 @@ function CardIcon({ name }) {
 
 function Navbar({ currentPage, setCurrentPage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const navTo = (page) => {
     setCurrentPage(page);
     setMobileMenuOpen(false);
   };
-
   const links = [
     { label: "Home", page: "home" },
     { label: "Estates", page: "estates" },
@@ -235,7 +248,6 @@ function Navbar({ currentPage, setCurrentPage }) {
           <Building2Icon />
           <span>Communest</span>
         </a>
-
         <div className="navbar-links">
           {links.map(({ label, page }) => (
             <a
@@ -261,7 +273,6 @@ function Navbar({ currentPage, setCurrentPage }) {
             Sign In
           </a>
         </div>
-
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -269,7 +280,6 @@ function Navbar({ currentPage, setCurrentPage }) {
           {mobileMenuOpen ? <XIcon /> : <MenuIcon />}
         </button>
       </div>
-
       {mobileMenuOpen && (
         <div className="mobile-menu active">
           {links.map(({ label, page }) => (
@@ -302,6 +312,7 @@ function Navbar({ currentPage, setCurrentPage }) {
 }
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
+// Popular Locations removed from here per request
 
 function HomePage({ setCurrentPage }) {
   return (
@@ -349,7 +360,7 @@ function HomePage({ setCurrentPage }) {
             {whyChooseUs.map((item, i) => (
               <div
                 key={i}
-                className="card card-dark"
+                className="card"
                 style={{ backgroundColor: "var(--bg-elevated)" }}
               >
                 <div className="icon-wrapper">
@@ -357,31 +368,6 @@ function HomePage({ setCurrentPage }) {
                 </div>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Popular Locations */}
-      <section className="section">
-        <div className="container">
-          <h2>Popular Locations</h2>
-          <div className="grid grid-4">
-            {cities.map((city) => (
-              <div
-                key={city}
-                className="card"
-                style={{ cursor: "pointer", textAlign: "center" }}
-                onClick={() => setCurrentPage("estates")}
-              >
-                <div style={{ fontSize: "1.75rem", marginBottom: "0.5rem" }}>
-                  📍
-                </div>
-                <h3 style={{ fontSize: "1rem" }}>{city}</h3>
-                <p style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
-                  Explore properties
-                </p>
               </div>
             ))}
           </div>
@@ -432,11 +418,831 @@ function HomePage({ setCurrentPage }) {
   );
 }
 
+// ─── Rental Application Page ──────────────────────────────────────────────────
+
+function RentalApplicationPage({ house, onBack }) {
+  const [activeImg, setActiveImg] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.phone) return;
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="section">
+        <div
+          className="container"
+          style={{ maxWidth: 600, textAlign: "center" }}
+        >
+          <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>✅</div>
+          <h2
+            style={{
+              fontSize: "1.8rem",
+              fontWeight: 700,
+              letterSpacing: "-0.04em",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Application Submitted!
+          </h2>
+          <p
+            style={{
+              color: "var(--text-secondary)",
+              marginBottom: "2rem",
+              fontSize: "1rem",
+            }}
+          >
+            Your rental application for{" "}
+            <strong style={{ color: "var(--text-primary)" }}>
+              {house.name}
+            </strong>{" "}
+            has been sent to the management of{" "}
+            <strong style={{ color: "var(--text-primary)" }}>
+              {house.estate}
+            </strong>
+            . They will reach out to you shortly.
+          </p>
+          <button className="btn btn-blue" onClick={onBack}>
+            ← Back to Properties
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="section">
+      <div className="container">
+        {/* Back button */}
+        <button
+          className="btn btn-gray"
+          onClick={onBack}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.4rem",
+            marginBottom: "2rem",
+          }}
+        >
+          <ArrowLeftIcon /> Back to Properties
+        </button>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "2rem",
+          }}
+        >
+          {/* Left — Photos + Details */}
+          <div>
+            {/* Image gallery */}
+            <div
+              style={{
+                borderRadius: "var(--radius-lg)",
+                overflow: "hidden",
+                border: "1px solid var(--border)",
+                marginBottom: "1rem",
+              }}
+            >
+              <img
+                src={house.images[activeImg]}
+                alt={house.name}
+                style={{
+                  width: "100%",
+                  height: 280,
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </div>
+            <div
+              style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}
+            >
+              {house.images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImg(i)}
+                  style={{
+                    flex: 1,
+                    height: 72,
+                    padding: 0,
+                    border: "2px solid",
+                    borderColor:
+                      activeImg === i ? "var(--accent)" : "var(--border)",
+                    borderRadius: "var(--radius-md)",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    transition: "border-color 0.2s",
+                    background: "none",
+                  }}
+                >
+                  <img
+                    src={img}
+                    alt={`view ${i + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                      opacity: activeImg === i ? 1 : 0.55,
+                      transition: "opacity 0.2s",
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Property details */}
+            <div className="card" style={{ marginBottom: "1rem" }}>
+              <h1
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.04em",
+                  color: "var(--text-primary)",
+                  marginBottom: "0.4rem",
+                }}
+              >
+                {house.name}
+              </h1>
+              <p
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                  color: "var(--text-secondary)",
+                  fontSize: "0.875rem",
+                  marginBottom: "0.75rem",
+                }}
+              >
+                <MapPinIcon /> {house.location} — {house.estate}
+              </p>
+
+              {/* Price */}
+              <div
+                style={{
+                  display: "inline-block",
+                  background: "rgba(59,130,246,0.1)",
+                  border: "1px solid rgba(59,130,246,0.3)",
+                  borderRadius: "var(--radius-md)",
+                  padding: "0.5rem 1rem",
+                  marginBottom: "1.25rem",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "1.6rem",
+                    fontWeight: 700,
+                    color: "var(--accent-light)",
+                    letterSpacing: "-0.04em",
+                  }}
+                >
+                  KES {house.price.toLocaleString()}
+                </span>
+                <span
+                  style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}
+                >
+                  {" "}
+                  / month
+                </span>
+              </div>
+
+              {/* Features row */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.75rem",
+                  flexWrap: "wrap",
+                  marginBottom: "1.25rem",
+                }}
+              >
+                {[
+                  { icon: <BedIcon />, label: `${house.bedrooms} Bedrooms` },
+                  { icon: <BathIcon />, label: `${house.bathrooms} Bathrooms` },
+                  {
+                    icon: <span style={{ fontSize: "1rem" }}>📐</span>,
+                    label: `${house.size} m²`,
+                  },
+                ].map(({ icon, label }) => (
+                  <div
+                    key={label}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      background: "var(--bg-elevated)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "var(--radius-md)",
+                      padding: "0.4rem 0.8rem",
+                      color: "var(--text-secondary)",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 16,
+                        height: 16,
+                        color: "var(--accent)",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      {icon}
+                    </span>
+                    {label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Description */}
+              <h3
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                About this property
+              </h3>
+              <p
+                style={{
+                  color: "var(--text-secondary)",
+                  fontSize: "0.875rem",
+                  lineHeight: "1.7",
+                }}
+              >
+                {house.description}
+              </p>
+            </div>
+
+            {/* Amenities */}
+            <div className="card">
+              <h3
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  marginBottom: "0.85rem",
+                }}
+              >
+                Amenities
+              </h3>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                {house.amenities.map((a) => (
+                  <span
+                    key={a}
+                    style={{
+                      background: "rgba(16,185,129,0.1)",
+                      border: "1px solid rgba(16,185,129,0.25)",
+                      color: "#6ee7b7",
+                      borderRadius: "var(--radius-sm)",
+                      padding: "0.3rem 0.7rem",
+                      fontSize: "0.78rem",
+                      fontWeight: 500,
+                    }}
+                  >
+                    ✓ {a}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right — Application Form */}
+          <div>
+            <div className="card" style={{ position: "sticky", top: "80px" }}>
+              <h2
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  marginBottom: "0.4rem",
+                }}
+              >
+                Apply for Rent
+              </h2>
+              <p
+                style={{
+                  color: "var(--text-secondary)",
+                  fontSize: "0.85rem",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                Fill in your details and the estate management will contact you.
+              </p>
+
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label className="form-label">
+                    Full Name <span style={{ color: "#f87171" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Your full name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    Email Address <span style={{ color: "#f87171" }}>*</span>
+                  </label>
+                  <input
+                    type="email"
+                    className="form-input"
+                    placeholder="your.email@example.com"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    Phone Number <span style={{ color: "#f87171" }}>*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    className="form-input"
+                    placeholder="+254 7XX XXX XXX"
+                    value={form.phone}
+                    onChange={(e) =>
+                      setForm({ ...form, phone: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    Message{" "}
+                    <span
+                      style={{ color: "var(--text-muted)", fontWeight: 400 }}
+                    >
+                      (optional)
+                    </span>
+                  </label>
+                  <textarea
+                    className="form-textarea"
+                    rows="4"
+                    placeholder="Tell the management a little about yourself or ask any questions..."
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm({ ...form, message: e.target.value })
+                    }
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-blue btn-full"
+                  style={{ marginTop: "0.5rem", padding: "0.85rem" }}
+                >
+                  📨 Submit Application
+                </button>
+
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: "0.78rem",
+                    textAlign: "center",
+                    marginTop: "0.75rem",
+                  }}
+                >
+                  Your details are sent directly to {house.estate} management
+                  only.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Estate Section (tenant-only portal for an approved estate) ───────────────
+
+function EstateSectionPage({ estate, onBack }) {
+  const [activeTab, setActiveTab] = useState("announcements");
+  const [submitted, setSubmitted] = useState(false);
+  const [inquiry, setInquiry] = useState({
+    type: "Inquiry",
+    subject: "",
+    message: "",
+  });
+
+  const handleInquirySubmit = (e) => {
+    e.preventDefault();
+    if (!inquiry.subject || !inquiry.message) return;
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="section">
+      <div className="container">
+        {/* Back */}
+        <button
+          className="btn btn-gray"
+          onClick={onBack}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.4rem",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <ArrowLeftIcon /> Back to Estates
+        </button>
+
+        {/* Estate header */}
+        <div
+          className="card"
+          style={{
+            marginBottom: "1.5rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "1.25rem",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "2.5rem",
+              background: "var(--bg-elevated)",
+              borderRadius: "var(--radius-lg)",
+              width: 60,
+              height: 60,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid var(--border)",
+              flexShrink: 0,
+            }}
+          >
+            {estate.logo}
+          </div>
+          <div>
+            <h1
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 700,
+                letterSpacing: "-0.04em",
+                marginBottom: "0.2rem",
+              }}
+            >
+              {estate.name}
+            </h1>
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: "0.875rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem",
+              }}
+            >
+              <MapPinIcon /> {estate.location}
+            </p>
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <span
+              style={{
+                background: "rgba(16,185,129,0.1)",
+                border: "1px solid rgba(16,185,129,0.3)",
+                color: "#6ee7b7",
+                borderRadius: "var(--radius-sm)",
+                padding: "0.3rem 0.8rem",
+                fontSize: "0.78rem",
+                fontWeight: 600,
+              }}
+            >
+              🔒 Tenant Portal
+            </span>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="tab-buttons mb-4">
+          {[
+            { key: "announcements", label: "🔔 Announcements" },
+            { key: "events", label: "📅 Events" },
+            { key: "inquiry", label: "📝 Send Inquiry" },
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              className={`btn ${activeTab === key ? "btn-blue" : "btn-gray"}`}
+              onClick={() => {
+                setActiveTab(key);
+                setSubmitted(false);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Announcements */}
+        {activeTab === "announcements" && (
+          <div>
+            <h2
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                marginBottom: "1rem",
+                textAlign: "left",
+              }}
+            >
+              Management Announcements
+            </h2>
+            {estate.announcements.length === 0 ? (
+              <p style={{ color: "var(--text-muted)" }}>
+                No announcements at this time.
+              </p>
+            ) : (
+              estate.announcements.map((a) => (
+                <div key={a.id} className="card-dark mb-2">
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      gap: "1rem",
+                      marginBottom: "0.35rem",
+                    }}
+                  >
+                    <h3
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: 600,
+                        color: "var(--text-primary)",
+                      }}
+                    >
+                      {a.title}
+                    </h3>
+                    <span
+                      style={{
+                        color: "var(--text-muted)",
+                        fontSize: "0.78rem",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {new Date(a.date).toLocaleDateString("en-KE")}
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.875rem",
+                    }}
+                  >
+                    {a.content}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Events */}
+        {activeTab === "events" && (
+          <div>
+            <h2
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                marginBottom: "1rem",
+                textAlign: "left",
+              }}
+            >
+              Upcoming Estate Events
+            </h2>
+            {estate.events.length === 0 ? (
+              <p style={{ color: "var(--text-muted)" }}>No upcoming events.</p>
+            ) : (
+              estate.events.map((ev) => (
+                <div
+                  key={ev.id}
+                  className="card-dark mb-2"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1.25rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "var(--bg-surface)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "var(--radius-md)",
+                      padding: "0.6rem 0.9rem",
+                      textAlign: "center",
+                      minWidth: 56,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: 700,
+                        color: "var(--accent-light)",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {new Date(ev.date).getDate()}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.7rem",
+                        color: "var(--text-muted)",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {new Date(ev.date).toLocaleString("en-KE", {
+                        month: "short",
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <h3
+                      style={{
+                        fontSize: "0.95rem",
+                        fontWeight: 600,
+                        color: "var(--text-primary)",
+                        marginBottom: "0.2rem",
+                      }}
+                    >
+                      {ev.title}
+                    </h3>
+                    <p
+                      style={{
+                        color: "var(--text-secondary)",
+                        fontSize: "0.82rem",
+                      }}
+                    >
+                      📍 {ev.location}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Inquiry */}
+        {activeTab === "inquiry" && (
+          <div style={{ maxWidth: 560 }}>
+            {submitted ? (
+              <div className="card" style={{ textAlign: "center" }}>
+                <div style={{ fontSize: "3rem", marginBottom: "0.75rem" }}>
+                  📨
+                </div>
+                <h3
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 700,
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Inquiry Sent!
+                </h3>
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.875rem",
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  Your {inquiry.type.toLowerCase()} has been sent to{" "}
+                  {estate.name} management.
+                </p>
+                <button
+                  className="btn btn-gray"
+                  onClick={() => {
+                    setSubmitted(false);
+                    setInquiry({ type: "Inquiry", subject: "", message: "" });
+                  }}
+                >
+                  Send Another
+                </button>
+              </div>
+            ) : (
+              <div className="card">
+                <h2
+                  style={{
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                    letterSpacing: "-0.03em",
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  Submit Inquiry or Complaint
+                </h2>
+                <form onSubmit={handleInquirySubmit}>
+                  <div className="form-group">
+                    <label className="form-label">Type</label>
+                    <select
+                      className="form-select"
+                      value={inquiry.type}
+                      onChange={(e) =>
+                        setInquiry({ ...inquiry, type: e.target.value })
+                      }
+                    >
+                      <option>Inquiry</option>
+                      <option>Complaint</option>
+                      <option>Maintenance Request</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Subject <span style={{ color: "#f87171" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="Brief subject"
+                      value={inquiry.subject}
+                      onChange={(e) =>
+                        setInquiry({ ...inquiry, subject: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Message <span style={{ color: "#f87171" }}>*</span>
+                    </label>
+                    <textarea
+                      className="form-textarea"
+                      rows="5"
+                      placeholder="Describe your inquiry or complaint in detail..."
+                      value={inquiry.message}
+                      onChange={(e) =>
+                        setInquiry({ ...inquiry, message: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-blue btn-full">
+                    📤 Submit
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Estates Page ─────────────────────────────────────────────────────────────
 
 function EstatesPage() {
-  const [userType, setUserType] = useState("outsider");
+  const [mainTab, setMainTab] = useState("properties"); // "properties" | "myEstate" | "list"
+  const [selectedCity, setSelectedCity] = useState("");
   const [showListingForm, setShowListingForm] = useState(false);
+  const [selectedHouse, setSelectedHouse] = useState(null); // → rental application page
+  const [selectedEstate, setSelectedEstate] = useState(null); // → estate section page
+
+  // If a house is selected, show the rental application page
+  if (selectedHouse) {
+    return (
+      <RentalApplicationPage
+        house={selectedHouse}
+        onBack={() => setSelectedHouse(null)}
+      />
+    );
+  }
+
+  // If an estate section is selected, show the estate portal
+  if (selectedEstate) {
+    return (
+      <EstateSectionPage
+        estate={selectedEstate}
+        onBack={() => setSelectedEstate(null)}
+      />
+    );
+  }
+
+  // Filter houses by city
+  const filteredHouses = selectedCity
+    ? vacantHouses.filter((h) => h.city === selectedCity)
+    : vacantHouses;
 
   return (
     <div className="section">
@@ -452,41 +1258,45 @@ function EstatesPage() {
           Estates
         </h1>
 
-        {/* Tab Controls */}
+        {/* Main Tabs */}
         <div className="tab-buttons mb-4">
           <button
-            className={`btn ${userType === "outsider" ? "btn-blue" : "btn-gray"}`}
-            onClick={() => setUserType("outsider")}
+            className={`btn ${mainTab === "properties" ? "btn-blue" : "btn-gray"}`}
+            onClick={() => setMainTab("properties")}
           >
-            View Properties
+            🏠 View Properties
           </button>
           <button
-            className={`btn ${userType === "tenant" ? "btn-blue" : "btn-gray"}`}
-            onClick={() => setUserType("tenant")}
+            className={`btn ${mainTab === "myEstate" ? "btn-blue" : "btn-gray"}`}
+            onClick={() => setMainTab("myEstate")}
           >
-            Tenant Portal
+            🔒 My Estate
           </button>
           <button
-            className="btn btn-green"
-            onClick={() => setShowListingForm(!showListingForm)}
+            className={`btn ${showListingForm ? "btn-green" : "btn-green"}`}
+            onClick={() => {
+              setShowListingForm(!showListingForm);
+              setMainTab("list");
+            }}
           >
             ➕ List Your Estate
           </button>
         </div>
 
-        {/* Listing Form */}
+        {/* ── List Estate Form ── */}
         {showListingForm && (
           <div className="card mb-4">
             <h2
               style={{
-                fontSize: "1.4rem",
+                fontSize: "1.3rem",
                 fontWeight: 700,
                 letterSpacing: "-0.03em",
-                marginBottom: "1.5rem",
+                marginBottom: "1.25rem",
               }}
             >
               List Your Estate
             </h2>
+            {/* Price field intentionally removed per request */}
             <form>
               <div className="form-row">
                 <div className="form-group">
@@ -500,7 +1310,7 @@ function EstatesPage() {
                 <div className="form-group">
                   <label className="form-label">Location</label>
                   <select className="form-select">
-                    <option>Select location</option>
+                    <option value="">Select location</option>
                     {locationOptions.map((loc) => (
                       <option key={loc}>{loc}</option>
                     ))}
@@ -509,14 +1319,6 @@ function EstatesPage() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Price (KES/month)</label>
-                  <input
-                    type="number"
-                    className="form-input"
-                    placeholder="e.g., 45000"
-                  />
-                </div>
-                <div className="form-group">
                   <label className="form-label">Bedrooms</label>
                   <input
                     type="number"
@@ -524,8 +1326,6 @@ function EstatesPage() {
                     placeholder="e.g., 2"
                   />
                 </div>
-              </div>
-              <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Bathrooms</label>
                   <input
@@ -534,6 +1334,8 @@ function EstatesPage() {
                     placeholder="e.g., 2"
                   />
                 </div>
+              </div>
+              <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Size (sqm)</label>
                   <input
@@ -570,202 +1372,365 @@ function EstatesPage() {
                 </div>
               </div>
               <button type="submit" className="btn btn-blue btn-full">
-                Submit Listing
+                Submit Listing for Approval
               </button>
             </form>
           </div>
         )}
 
-        {/* Property Listings */}
-        {userType === "outsider" && (
+        {/* ── View Properties Tab ── */}
+        {mainTab === "properties" && (
           <div>
+            {/* Location filter — radio buttons, optional */}
+            <div className="card mb-4" style={{ padding: "1.25rem 1.5rem" }}>
+              <h3
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  marginBottom: "0.85rem",
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                }}
+              >
+                Filter by Location (optional)
+              </h3>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
+                {/* "All" option */}
+                <label
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.45rem",
+                    cursor: "pointer",
+                    userSelect: "none",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="city"
+                    value=""
+                    checked={selectedCity === ""}
+                    onChange={() => setSelectedCity("")}
+                    style={{
+                      accentColor: "var(--accent)",
+                      width: 16,
+                      height: 16,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: "0.875rem",
+                      color:
+                        selectedCity === ""
+                          ? "var(--text-primary)"
+                          : "var(--text-secondary)",
+                      fontWeight: selectedCity === "" ? 600 : 400,
+                      transition: "color 0.2s",
+                    }}
+                  >
+                    All Cities
+                  </span>
+                </label>
+                {cities.map((city) => (
+                  <label
+                    key={city}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.45rem",
+                      cursor: "pointer",
+                      userSelect: "none",
+                      background:
+                        selectedCity === city
+                          ? "rgba(59,130,246,0.1)"
+                          : "var(--bg-elevated)",
+                      border: `1px solid ${selectedCity === city ? "rgba(59,130,246,0.4)" : "var(--border)"}`,
+                      borderRadius: "var(--radius-md)",
+                      padding: "0.4rem 0.85rem",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="city"
+                      value={city}
+                      checked={selectedCity === city}
+                      onChange={() => setSelectedCity(city)}
+                      style={{
+                        accentColor: "var(--accent)",
+                        width: 15,
+                        height: 15,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: "0.875rem",
+                        color:
+                          selectedCity === city
+                            ? "var(--accent-light)"
+                            : "var(--text-secondary)",
+                        fontWeight: selectedCity === city ? 600 : 400,
+                        transition: "color 0.2s",
+                      }}
+                    >
+                      {city}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Property grid */}
             <h2
               style={{
                 textAlign: "left",
-                fontSize: "1.4rem",
+                fontSize: "1.3rem",
                 fontWeight: 700,
                 letterSpacing: "-0.03em",
-                marginBottom: "1.5rem",
+                marginBottom: "1.25rem",
               }}
             >
-              Available Properties
+              Available Properties{" "}
+              {selectedCity ? `in ${selectedCity}` : "Across Kenya"}
+              <span
+                style={{
+                  color: "var(--text-muted)",
+                  fontWeight: 400,
+                  fontSize: "0.9rem",
+                  marginLeft: "0.5rem",
+                }}
+              >
+                ({filteredHouses.length})
+              </span>
             </h2>
-            <div className="grid grid-3">
-              {vacantHouses.map((house) => (
-                <div key={house.id} className="property-card">
-                  <img
-                    src={house.image}
-                    alt={house.name}
-                    className="property-image"
-                  />
-                  <div className="property-content">
-                    <h3 className="property-title">{house.name}</h3>
-                    <p className="property-location">
-                      <MapPinIcon /> {house.location}
-                    </p>
-                    <div className="property-features">
-                      <span>
-                        <BedIcon /> {house.bedrooms} beds
-                      </span>
-                      <span>
-                        <BathIcon /> {house.bathrooms} baths
-                      </span>
-                      <span>📏 {house.size}m²</span>
-                    </div>
-                    <div className="property-footer">
-                      <div className="property-price">
-                        KES {house.price.toLocaleString()}
-                        <small>/mo</small>
+
+            {filteredHouses.length === 0 ? (
+              <div
+                className="card"
+                style={{ textAlign: "center", padding: "3rem" }}
+              >
+                <div style={{ fontSize: "3rem", marginBottom: "0.75rem" }}>
+                  🔍
+                </div>
+                <p style={{ color: "var(--text-secondary)" }}>
+                  No properties found in {selectedCity}.
+                </p>
+                <button
+                  className="btn btn-gray"
+                  style={{ marginTop: "1rem" }}
+                  onClick={() => setSelectedCity("")}
+                >
+                  Clear Filter
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-3">
+                {filteredHouses.map((house) => (
+                  <div key={house.id} className="property-card">
+                    <img
+                      src={house.images[0]}
+                      alt={house.name}
+                      className="property-image"
+                    />
+                    <div className="property-content">
+                      <h3 className="property-title">{house.name}</h3>
+                      <p className="property-location">
+                        <MapPinIcon /> {house.location}
+                      </p>
+                      <div className="property-features">
+                        <span>
+                          <BedIcon /> {house.bedrooms} beds
+                        </span>
+                        <span>
+                          <BathIcon /> {house.bathrooms} baths
+                        </span>
+                        <span>📏 {house.size}m²</span>
                       </div>
-                      <button
-                        className="btn btn-blue"
-                        style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}
-                      >
-                        View
-                      </button>
+                      <div className="property-footer">
+                        <div className="property-price">
+                          KES {house.price.toLocaleString()}
+                          <small>/mo</small>
+                        </div>
+                        {/* "View" → "Apply for Rent" */}
+                        <button
+                          className="btn btn-green"
+                          style={{
+                            padding: "0.45rem 0.9rem",
+                            fontSize: "0.82rem",
+                          }}
+                          onClick={() => setSelectedHouse(house)}
+                        >
+                          Apply for Rent
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Tenant Portal */}
-        {userType === "tenant" && (
+        {/* ── My Estate Tab — tenant portal for approved estates ── */}
+        {mainTab === "myEstate" && (
           <div>
-            {/* Events */}
-            <div className="card mb-4">
-              <h2
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  marginBottom: "1rem",
-                }}
-              >
-                📅 Upcoming Events
-              </h2>
-              {events.map((event) => (
-                <div key={event.id} className="card-dark mb-2">
-                  <h3
+            {/* Explainer banner */}
+            <div
+              style={{
+                background: "rgba(59,130,246,0.07)",
+                border: "1px solid rgba(59,130,246,0.2)",
+                borderRadius: "var(--radius-lg)",
+                padding: "1rem 1.25rem",
+                marginBottom: "1.5rem",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "0.75rem",
+              }}
+            >
+              <span style={{ fontSize: "1.3rem", flexShrink: 0 }}>🔒</span>
+              <div>
+                <p
+                  style={{
+                    color: "var(--text-primary)",
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                    marginBottom: "0.25rem",
+                  }}
+                >
+                  Tenant-Only Area
+                </p>
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.82rem",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  This section lists all approved estates on Communest. Each
+                  estate's portal (announcements, events, and inquiries) is
+                  visible only to registered tenants of that estate. Outsiders
+                  can view the estate name and location only.
+                </p>
+              </div>
+            </div>
+
+            <h2
+              style={{
+                textAlign: "left",
+                fontSize: "1.3rem",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                marginBottom: "1.25rem",
+              }}
+            >
+              Approved Estates on Communest
+            </h2>
+
+            <div className="grid grid-3">
+              {approvedEstates.map((estate) => (
+                <div
+                  key={estate.id}
+                  className="card"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setSelectedEstate(estate)}
+                >
+                  <div
                     style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 600,
-                      color: "var(--text-primary)",
-                      marginBottom: "0.3rem",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.85rem",
+                      marginBottom: "1rem",
                     }}
                   >
-                    {event.title}
-                  </h3>
-                  <p
+                    <div
+                      style={{
+                        fontSize: "1.8rem",
+                        background: "var(--bg-elevated)",
+                        borderRadius: "var(--radius-md)",
+                        width: 48,
+                        height: 48,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        border: "1px solid var(--border)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {estate.logo}
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: "1rem", marginBottom: "0.2rem" }}>
+                        {estate.name}
+                      </h3>
+                      <p
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "var(--text-secondary)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <MapPinIcon /> {estate.location}
+                      </p>
+                    </div>
+                  </div>
+                  <div
                     style={{
-                      fontSize: "0.82rem",
-                      color: "var(--text-secondary)",
-                      marginBottom: "0.2rem",
+                      display: "flex",
+                      gap: "0.5rem",
+                      flexWrap: "wrap",
+                      marginBottom: "1rem",
                     }}
                   >
-                    📆 {new Date(event.date).toLocaleDateString("en-KE")}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "0.82rem",
-                      color: "var(--text-secondary)",
-                    }}
+                    <span
+                      style={{
+                        background: "rgba(59,130,246,0.08)",
+                        border: "1px solid rgba(59,130,246,0.2)",
+                        color: "var(--accent-light)",
+                        borderRadius: "var(--radius-sm)",
+                        padding: "0.2rem 0.6rem",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {estate.events.length} Events
+                    </span>
+                    <span
+                      style={{
+                        background: "rgba(16,185,129,0.08)",
+                        border: "1px solid rgba(16,185,129,0.2)",
+                        color: "#6ee7b7",
+                        borderRadius: "var(--radius-sm)",
+                        padding: "0.2rem 0.6rem",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {estate.announcements.length} Announcements
+                    </span>
+                  </div>
+                  <button
+                    className="btn btn-blue btn-full"
+                    style={{ fontSize: "0.85rem", padding: "0.5rem" }}
                   >
-                    📍 {event.location}
-                  </p>
+                    Enter Estate Portal →
+                  </button>
                 </div>
               ))}
             </div>
 
-            {/* Announcements */}
-            <div className="card mb-4">
-              <h2
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  marginBottom: "1rem",
-                }}
-              >
-                🔔 Announcements
-              </h2>
-              {announcements.map((a) => (
-                <div key={a.id} className="card-dark mb-2">
-                  <h3
-                    style={{
-                      fontSize: "0.95rem",
-                      fontWeight: 600,
-                      color: "var(--text-primary)",
-                      marginBottom: "0.3rem",
-                    }}
-                  >
-                    {a.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "0.78rem",
-                      color: "var(--text-muted)",
-                      marginBottom: "0.3rem",
-                    }}
-                  >
-                    {new Date(a.date).toLocaleDateString("en-KE")}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    {a.content}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Inquiry / Complaint Form */}
-            <div className="card">
-              <h2
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  marginBottom: "1rem",
-                }}
-              >
-                📝 Submit Inquiry or Complaint
-              </h2>
-              <form>
-                <div className="form-group">
-                  <label className="form-label">Type</label>
-                  <select className="form-select">
-                    <option>Inquiry</option>
-                    <option>Complaint</option>
-                    <option>Maintenance Request</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Subject</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="Brief subject"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Message</label>
-                  <textarea
-                    className="form-textarea"
-                    rows="5"
-                    placeholder="Describe your inquiry or complaint..."
-                  ></textarea>
-                </div>
-                <button type="submit" className="btn btn-blue btn-full">
-                  📤 Submit
-                </button>
-              </form>
-            </div>
+            <p
+              style={{
+                color: "var(--text-muted)",
+                fontSize: "0.8rem",
+                textAlign: "center",
+                marginTop: "1.5rem",
+              }}
+            >
+              🔑 Full portal access (announcements, events, inquiries) requires
+              signing in with your estate account.
+            </p>
           </div>
         )}
       </div>
@@ -809,7 +1774,6 @@ function AboutPage() {
           efficiently.
         </p>
 
-        {/* Mission */}
         <div className="card mb-4" style={{ textAlign: "center" }}>
           <h2
             style={{
@@ -838,7 +1802,6 @@ function AboutPage() {
           </p>
         </div>
 
-        {/* Trust pillars */}
         <h2 style={{ marginBottom: "1.5rem" }}>
           Why Communest is Perfect for You
         </h2>
@@ -854,7 +1817,6 @@ function AboutPage() {
           ))}
         </div>
 
-        {/* Feature lists */}
         <h2 style={{ marginBottom: "1.5rem" }}>Key Features</h2>
         <div className="grid grid-2 mb-4">
           {[
@@ -901,7 +1863,6 @@ function AboutPage() {
           ))}
         </div>
 
-        {/* Contact */}
         <h2 style={{ marginBottom: "1.5rem" }}>Get in Touch</h2>
         <div className="grid grid-3 mb-4">
           {[
@@ -926,7 +1887,6 @@ function AboutPage() {
           ))}
         </div>
 
-        {/* Social */}
         <div className="card text-center">
           <h2
             style={{
@@ -959,8 +1919,8 @@ function AboutPage() {
             ))}
           </div>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
-            Follow us on social media for the latest updates, property listings,
-            and housing tips!
+            Follow us for the latest updates, property listings, and housing
+            tips!
           </p>
         </div>
       </div>
@@ -987,7 +1947,6 @@ function AuthPage() {
               : "Join Communest and find your dream home in Kenya"}
           </p>
         </div>
-
         <div className="auth-form">
           <form>
             {!isLogin && (
@@ -1054,7 +2013,6 @@ function AuthPage() {
               {isLogin ? "Sign In" : "Create Account"}
             </button>
           </form>
-
           <div className="auth-footer">
             <p>
               {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
@@ -1071,7 +2029,6 @@ function AuthPage() {
             </p>
           </div>
         </div>
-
         <p
           className="text-center mt-4"
           style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}
@@ -1104,7 +2061,6 @@ function Footer({ setCurrentPage }) {
     <footer className="footer">
       <div className="container">
         <div className="footer-grid">
-          {/* Brand */}
           <div>
             <a
               href="#"
@@ -1130,8 +2086,6 @@ function Footer({ setCurrentPage }) {
               management. Connecting communities, one home at a time.
             </p>
           </div>
-
-          {/* Quick Links */}
           <div>
             <h3>Quick Links</h3>
             <ul className="footer-links">
@@ -1151,8 +2105,6 @@ function Footer({ setCurrentPage }) {
               ))}
             </ul>
           </div>
-
-          {/* Contact */}
           <div>
             <h3>Contact Us</h3>
             <ul className="footer-links">
@@ -1184,8 +2136,6 @@ function Footer({ setCurrentPage }) {
               </li>
             </ul>
           </div>
-
-          {/* Social */}
           <div>
             <h3>Follow Us</h3>
             <div className="social-icons mb-2">
@@ -1211,7 +2161,6 @@ function Footer({ setCurrentPage }) {
             </p>
           </div>
         </div>
-
         <div className="footer-bottom">
           <p>
             © {new Date().getFullYear()} Communest Kenya. All rights reserved.
@@ -1249,6 +2198,5 @@ function App() {
   );
 }
 
-// Mount
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
