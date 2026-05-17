@@ -199,7 +199,7 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-// Helper: resolve icon name string from data to a component
+// Resolve icon name from data to component
 function CardIcon({ name }) {
   if (name === "building") return <Building2Icon />;
   return <HomeIcon />;
@@ -313,24 +313,21 @@ function HomePage({ setCurrentPage }) {
             Welcome to{" "}
             <span className="highlight">{heroContent.highlight}</span>
           </h1>
-          <p style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
-            {heroContent.tagline}
-          </p>
           <p
             style={{
-              fontSize: "1.125rem",
-              color: "#94a3b8",
-              maxWidth: "900px",
-              margin: "0 auto 2rem",
+              fontSize: "1.2rem",
+              marginBottom: "0.75rem",
+              color: "#cbd5e1",
             }}
           >
-            {heroContent.description}
+            {heroContent.tagline}
           </p>
+          <p style={{ fontSize: "1rem" }}>{heroContent.description}</p>
           <div className="hero-buttons">
             <button
               className="btn-primary"
               onClick={() => setCurrentPage("estates")}
-              style={{ padding: "1rem 2rem", fontSize: "1.125rem" }}
+              style={{ padding: "0.85rem 2rem", fontSize: "1rem" }}
             >
               🔍 Find Your Home
             </button>
@@ -350,7 +347,11 @@ function HomePage({ setCurrentPage }) {
           <h2>Why Choose Communest?</h2>
           <div className="grid grid-3">
             {whyChooseUs.map((item, i) => (
-              <div key={i} className="card card-dark">
+              <div
+                key={i}
+                className="card card-dark"
+                style={{ backgroundColor: "var(--bg-elevated)" }}
+              >
                 <div className="icon-wrapper">
                   <CardIcon name={item.icon} />
                 </div>
@@ -368,9 +369,19 @@ function HomePage({ setCurrentPage }) {
           <h2>Popular Locations</h2>
           <div className="grid grid-4">
             {cities.map((city) => (
-              <div key={city} className="card" style={{ cursor: "pointer" }}>
-                <h3>{city}</h3>
-                <p>Explore properties</p>
+              <div
+                key={city}
+                className="card"
+                style={{ cursor: "pointer", textAlign: "center" }}
+                onClick={() => setCurrentPage("estates")}
+              >
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.5rem" }}>
+                  📍
+                </div>
+                <h3 style={{ fontSize: "1rem" }}>{city}</h3>
+                <p style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
+                  Explore properties
+                </p>
               </div>
             ))}
           </div>
@@ -381,23 +392,36 @@ function HomePage({ setCurrentPage }) {
       <section
         className="section"
         style={{
-          background: "linear-gradient(135deg, #1e40af 0%, #1e293b 100%)",
+          background:
+            "linear-gradient(135deg, #1e3a8a 0%, var(--bg-surface) 100%)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div className="container text-center">
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(ellipse 60% 80% at 50% 50%, rgba(59,130,246,0.12) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div className="container text-center" style={{ position: "relative" }}>
           <h2>Ready to Get Started?</h2>
-          <p style={{ fontSize: "1.125rem", marginBottom: "2rem" }}>
+          <p
+            style={{
+              fontSize: "1.05rem",
+              marginBottom: "2rem",
+              color: "var(--text-secondary)",
+            }}
+          >
             Join thousands of Kenyans who trust Communest for their housing
             needs
           </p>
           <button
-            className="btn"
-            style={{
-              backgroundColor: "white",
-              color: "#1e40af",
-              padding: "1rem 2rem",
-              fontSize: "1.125rem",
-            }}
+            className="btn btn-primary"
+            style={{ padding: "0.9rem 2.2rem", fontSize: "1rem" }}
             onClick={() => setCurrentPage("auth")}
           >
             Create Your Account
@@ -417,7 +441,16 @@ function EstatesPage() {
   return (
     <div className="section">
       <div className="container">
-        <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem" }}>Estates</h1>
+        <h1
+          style={{
+            fontSize: "2.2rem",
+            fontWeight: 700,
+            letterSpacing: "-0.04em",
+            marginBottom: "2rem",
+          }}
+        >
+          Estates
+        </h1>
 
         {/* Tab Controls */}
         <div className="tab-buttons mb-4">
@@ -444,7 +477,16 @@ function EstatesPage() {
         {/* Listing Form */}
         {showListingForm && (
           <div className="card mb-4">
-            <h2>List Your Estate</h2>
+            <h2
+              style={{
+                fontSize: "1.4rem",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                marginBottom: "1.5rem",
+              }}
+            >
+              List Your Estate
+            </h2>
             <form>
               <div className="form-row">
                 <div className="form-group">
@@ -537,7 +579,17 @@ function EstatesPage() {
         {/* Property Listings */}
         {userType === "outsider" && (
           <div>
-            <h2 className="mb-4">Available Properties</h2>
+            <h2
+              style={{
+                textAlign: "left",
+                fontSize: "1.4rem",
+                fontWeight: 700,
+                letterSpacing: "-0.03em",
+                marginBottom: "1.5rem",
+              }}
+            >
+              Available Properties
+            </h2>
             <div className="grid grid-3">
               {vacantHouses.map((house) => (
                 <div key={house.id} className="property-card">
@@ -565,7 +617,12 @@ function EstatesPage() {
                         KES {house.price.toLocaleString()}
                         <small>/mo</small>
                       </div>
-                      <button className="btn btn-blue">View</button>
+                      <button
+                        className="btn btn-blue"
+                        style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}
+                      >
+                        View
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -579,46 +636,106 @@ function EstatesPage() {
           <div>
             {/* Events */}
             <div className="card mb-4">
-              <h2 className="mb-3">📅 Upcoming Events</h2>
+              <h2
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  marginBottom: "1rem",
+                }}
+              >
+                📅 Upcoming Events
+              </h2>
               {events.map((event) => (
-                <div
-                  key={event.id}
-                  className="card-dark mb-2"
-                  style={{ padding: "1rem" }}
-                >
-                  <h3 style={{ fontSize: "1.125rem" }}>{event.title}</h3>
-                  <p className="mb-1">
-                    Date: {new Date(event.date).toLocaleDateString("en-KE")}
+                <div key={event.id} className="card-dark mb-2">
+                  <h3
+                    style={{
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
+                      color: "var(--text-primary)",
+                      marginBottom: "0.3rem",
+                    }}
+                  >
+                    {event.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "0.82rem",
+                      color: "var(--text-secondary)",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    📆 {new Date(event.date).toLocaleDateString("en-KE")}
                   </p>
-                  <p>Location: {event.location}</p>
+                  <p
+                    style={{
+                      fontSize: "0.82rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    📍 {event.location}
+                  </p>
                 </div>
               ))}
             </div>
 
             {/* Announcements */}
             <div className="card mb-4">
-              <h2 className="mb-3">🔔 Announcements</h2>
+              <h2
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  marginBottom: "1rem",
+                }}
+              >
+                🔔 Announcements
+              </h2>
               {announcements.map((a) => (
-                <div
-                  key={a.id}
-                  className="card-dark mb-2"
-                  style={{ padding: "1rem" }}
-                >
-                  <h3 style={{ fontSize: "1.125rem" }}>{a.title}</h3>
+                <div key={a.id} className="card-dark mb-2">
+                  <h3
+                    style={{
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
+                      color: "var(--text-primary)",
+                      marginBottom: "0.3rem",
+                    }}
+                  >
+                    {a.title}
+                  </h3>
                   <p
-                    className="mb-1"
-                    style={{ fontSize: "0.875rem", color: "#94a3b8" }}
+                    style={{
+                      fontSize: "0.78rem",
+                      color: "var(--text-muted)",
+                      marginBottom: "0.3rem",
+                    }}
                   >
                     {new Date(a.date).toLocaleDateString("en-KE")}
                   </p>
-                  <p>{a.content}</p>
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    {a.content}
+                  </p>
                 </div>
               ))}
             </div>
 
             {/* Inquiry / Complaint Form */}
             <div className="card">
-              <h2 className="mb-3">📝 Submit Inquiry or Complaint</h2>
+              <h2
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  marginBottom: "1rem",
+                }}
+              >
+                📝 Submit Inquiry or Complaint
+              </h2>
               <form>
                 <div className="form-group">
                   <label className="form-label">Type</label>
@@ -667,20 +784,23 @@ function AboutPage() {
       <div className="container">
         <h1
           style={{
-            fontSize: "3rem",
+            fontSize: "2.8rem",
+            fontWeight: 800,
+            letterSpacing: "-0.05em",
             textAlign: "center",
-            marginBottom: "2rem",
+            marginBottom: "1.25rem",
           }}
         >
           About Communest
         </h1>
         <p
           style={{
-            fontSize: "1.125rem",
+            fontSize: "1.05rem",
             textAlign: "center",
-            maxWidth: "900px",
+            maxWidth: "820px",
             margin: "0 auto 3rem",
-            color: "#cbd5e1",
+            color: "var(--text-secondary)",
+            lineHeight: "1.75",
           }}
         >
           Communest is Kenya's leading platform for house management and house
@@ -690,15 +810,25 @@ function AboutPage() {
         </p>
 
         {/* Mission */}
-        <div className="card mb-4">
-          <h2 className="text-center mb-3">Our Mission</h2>
+        <div className="card mb-4" style={{ textAlign: "center" }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 700,
+              letterSpacing: "-0.035em",
+              marginBottom: "1rem",
+              textAlign: "center",
+            }}
+          >
+            Our Mission
+          </h2>
           <p
             style={{
-              fontSize: "1.125rem",
-              textAlign: "center",
-              maxWidth: "800px",
+              fontSize: "1rem",
+              maxWidth: "720px",
               margin: "0 auto",
-              color: "#cbd5e1",
+              color: "var(--text-secondary)",
+              lineHeight: "1.75",
             }}
           >
             To revolutionize the housing sector in Kenya by making property
@@ -709,11 +839,13 @@ function AboutPage() {
         </div>
 
         {/* Trust pillars */}
-        <h2 className="text-center mb-4">Why Communest is Perfect for You</h2>
+        <h2 style={{ marginBottom: "1.5rem" }}>
+          Why Communest is Perfect for You
+        </h2>
         <div className="grid grid-4 mb-4">
           {trust.map((item, i) => (
             <div key={i} className="card text-center">
-              <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
+              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>
                 {item.icon}
               </div>
               <h3>{item.title}</h3>
@@ -723,7 +855,7 @@ function AboutPage() {
         </div>
 
         {/* Feature lists */}
-        <h2 className="text-center mb-4">Key Features</h2>
+        <h2 style={{ marginBottom: "1.5rem" }}>Key Features</h2>
         <div className="grid grid-2 mb-4">
           {[
             { title: "For House Hunters", items: forHunters },
@@ -732,11 +864,36 @@ function AboutPage() {
             { title: "Security & Trust", items: security },
           ].map(({ title, items }) => (
             <div key={title} className="card">
-              <h3 className="mb-3">{title}</h3>
+              <h3 style={{ marginBottom: "1rem" }}>{title}</h3>
               <ul style={{ listStyle: "none", padding: 0 }}>
                 {items.map((item, i) => (
-                  <li key={i} className="mb-2">
-                    • {item}
+                  <li
+                    key={i}
+                    style={{
+                      marginBottom: "0.55rem",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "var(--accent)",
+                        fontSize: "0.8rem",
+                        marginTop: "0.2rem",
+                        flexShrink: 0,
+                      }}
+                    >
+                      ✦
+                    </span>
+                    <span
+                      style={{
+                        color: "var(--text-secondary)",
+                        fontSize: "0.875rem",
+                      }}
+                    >
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -745,38 +902,42 @@ function AboutPage() {
         </div>
 
         {/* Contact */}
-        <h2 className="text-center mb-4">Get in Touch</h2>
+        <h2 style={{ marginBottom: "1.5rem" }}>Get in Touch</h2>
         <div className="grid grid-3 mb-4">
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              ✉️
+          {[
+            { icon: "✉️", title: "Email", lines: contact.emails },
+            { icon: "📞", title: "Phone", lines: contact.phones },
+            { icon: "📍", title: "Office", lines: [contact.address] },
+          ].map(({ icon, title, lines }) => (
+            <div key={title} className="card text-center">
+              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>
+                {icon}
+              </div>
+              <h3>{title}</h3>
+              {lines.map((l) => (
+                <p
+                  key={l}
+                  style={{ marginTop: "0.25rem", fontSize: "0.875rem" }}
+                >
+                  {l}
+                </p>
+              ))}
             </div>
-            <h3>Email</h3>
-            {contact.emails.map((e) => (
-              <p key={e}>{e}</p>
-            ))}
-          </div>
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              📞
-            </div>
-            <h3>Phone</h3>
-            {contact.phones.map((p) => (
-              <p key={p}>{p}</p>
-            ))}
-          </div>
-          <div className="card text-center">
-            <div className="icon-wrapper" style={{ margin: "0 auto 1rem" }}>
-              📍
-            </div>
-            <h3>Office</h3>
-            <p>{contact.address}</p>
-          </div>
+          ))}
         </div>
 
         {/* Social */}
         <div className="card text-center">
-          <h2 className="mb-3">Connect With Us</h2>
+          <h2
+            style={{
+              fontSize: "1.4rem",
+              fontWeight: 700,
+              letterSpacing: "-0.03em",
+              marginBottom: "1.25rem",
+            }}
+          >
+            Connect With Us
+          </h2>
           <div
             className="social-icons"
             style={{ justifyContent: "center", marginBottom: "1rem" }}
@@ -791,13 +952,13 @@ function AboutPage() {
                 key={href}
                 href={href}
                 className="social-icon"
-                style={{ width: "48px", height: "48px" }}
+                style={{ width: "44px", height: "44px" }}
               >
                 <Icon />
               </a>
             ))}
           </div>
-          <p style={{ color: "#94a3b8" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
             Follow us on social media for the latest updates, property listings,
             and housing tips!
           </p>
@@ -819,10 +980,8 @@ function AuthPage() {
           <div className="auth-icon">
             <Building2Icon />
           </div>
-          <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
-            {isLogin ? "Welcome Back" : "Create Account"}
-          </h1>
-          <p style={{ color: "#94a3b8" }}>
+          <h1>{isLogin ? "Welcome Back" : "Create Account"}</h1>
+          <p>
             {isLogin
               ? "Sign in to access your Communest account"
               : "Join Communest and find your dream home in Kenya"}
@@ -880,14 +1039,18 @@ function AuthPage() {
                 <div className="form-group">
                   <label className="form-label">Account Type</label>
                   <select className="form-select">
-                    <option>Tenant/House Hunter</option>
+                    <option>Tenant / House Hunter</option>
                     <option>Estate Manager</option>
                     <option>Property Owner</option>
                   </select>
                 </div>
               </>
             )}
-            <button type="submit" className="btn btn-blue btn-full">
+            <button
+              type="submit"
+              className="btn btn-blue btn-full"
+              style={{ marginTop: "0.5rem" }}
+            >
               {isLogin ? "Sign In" : "Create Account"}
             </button>
           </form>
@@ -911,7 +1074,7 @@ function AuthPage() {
 
         <p
           className="text-center mt-4"
-          style={{ fontSize: "0.875rem", color: "#94a3b8" }}
+          style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}
         >
           By signing up, you agree to our{" "}
           <a href="#" className="auth-link">
@@ -950,12 +1113,19 @@ function Footer({ setCurrentPage }) {
                 e.preventDefault();
                 setCurrentPage("home");
               }}
-              style={{ marginBottom: "1rem", display: "flex" }}
+              style={{ marginBottom: "1rem", display: "inline-flex" }}
             >
               <Building2Icon />
-              <span>Communest</span>
+              <span style={{ marginLeft: "0.5rem" }}>Communest</span>
             </a>
-            <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: "0.85rem",
+                lineHeight: "1.65",
+                marginTop: "0.75rem",
+              }}
+            >
               Kenya's trusted platform for house hunting and property
               management. Connecting communities, one home at a time.
             </p>
@@ -1003,7 +1173,13 @@ function Footer({ setCurrentPage }) {
                   </a>
                 </li>
               ))}
-              <li style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
+              <li
+                style={{
+                  color: "var(--text-muted)",
+                  fontSize: "0.82rem",
+                  marginTop: "0.25rem",
+                }}
+              >
                 {contact.address}
               </li>
             </ul>
@@ -1024,7 +1200,13 @@ function Footer({ setCurrentPage }) {
                 </a>
               ))}
             </div>
-            <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>
+            <p
+              style={{
+                color: "var(--text-muted)",
+                fontSize: "0.82rem",
+                marginTop: "0.75rem",
+              }}
+            >
               Stay updated with the latest properties and housing news in Kenya
             </p>
           </div>

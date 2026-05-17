@@ -3,14 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Communest - Kenya's House Management & Hunting Platform</title>
+    <title>Communest — Kenya's Home &amp; Estate Platform</title>
     <meta
       name="description"
       content="Communest is Kenya's leading platform for house management and house hunting. Find your dream home in Nairobi, Mombasa, Kisumu, Nakuru and beyond."
     />
+
+    <!--
+      SF Pro is Apple's system font and loads automatically on Apple devices.
+      On all other platforms we fall back to "Plus Jakarta Sans" — a clean,
+      modern geometric sans that closely matches SF Pro's character.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="style.css" />
 
-    <!-- React and ReactDOM from CDN -->
+    <!-- React 18 + Babel (JSX in-browser transpilation) -->
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.production.min.js"
@@ -23,13 +36,11 @@
   </head>
 
   <body>
-    <!-- Root mount point for the React application -->
+    <!-- React mount point -->
     <div id="root"></div>
 
     <!-- =====================================================
-         STATIC DATA STORE
-         All application data lives here as JSON.
-         script.js reads these via window.APP_DATA.
+         STATIC DATA STORE — script.js reads via window.APP_DATA
          ===================================================== -->
     <script id="app-data" type="application/json">
       {
@@ -133,7 +144,7 @@
             "id": 1,
             "title": "Water Maintenance Schedule",
             "date": "2026-05-15",
-            "content": "Water will be off on Saturday from 8AM-2PM"
+            "content": "Water will be off on Saturday from 8AM–2PM"
           },
           {
             "id": 2,
@@ -172,7 +183,6 @@
         },
 
         "heroContent": {
-          "title": "Welcome to Communest",
           "highlight": "Communest",
           "tagline": "Your Ultimate Solution for House Management & House Hunting in Kenya",
           "description": "Whether you're looking for your dream home in Nairobi, Mombasa, Kisumu, or Nakuru, or managing your estate, Communest makes it simple and efficient."
@@ -224,7 +234,7 @@
             "Advanced search filters by location, price, and amenities",
             "Direct contact with property managers",
             "Virtual tours and detailed property information",
-            "Save favorites and compare properties"
+            "Save favourites and compare properties"
           ],
           "forManagers": [
             "Easy property listing and management tools",
@@ -238,7 +248,7 @@
             "Real-time announcements and updates",
             "Submit inquiries and complaints easily",
             "Online rent payment tracking",
-            "Community forum and neighbor connections"
+            "Community forum and neighbour connections"
           ],
           "security": [
             "Secure payment processing",
@@ -251,7 +261,7 @@
       }
     </script>
 
-    <!-- Bootstrap app data into window before script.js runs -->
+    <!-- Expose data to React app before script.js executes -->
     <script>
       window.APP_DATA = JSON.parse(
         document.getElementById("app-data").textContent,
