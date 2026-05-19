@@ -4,13 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Communest — Kenya's Home &amp; Estate Platform</title>
-    <meta name="description" content="Communest is Kenya's leading platform for house management and house hunting. Find your dream home in Nairobi, Mombasa, Kisumu, Nakuru and beyond." />
+    <meta
+      name="description"
+      content="Communest is Kenya's leading platform for house management and house hunting. Find your dream home in Nairobi, Mombasa, Kisumu, Nakuru and beyond."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
 
@@ -20,8 +32,14 @@
     <script id="app-data" type="application/json">
       {
         "cities": [
-          "Nairobi", "Mombasa", "Kisumu", "Nakuru",
-          "Eldoret", "Thika", "Kitale", "Malindi"
+          "Nairobi",
+          "Mombasa",
+          "Kisumu",
+          "Nakuru",
+          "Eldoret",
+          "Thika",
+          "Kitale",
+          "Malindi"
         ],
 
         "vacantHouses": [
@@ -35,8 +53,16 @@
             "bathrooms": 2,
             "size": 85,
             "estate": "Kilimani Heights",
+            "estateId": "est-001",
             "description": "A stunning modern apartment nestled in the heart of Kilimani. Features an open-plan living area, fully fitted kitchen, ample natural light, secure parking, and access to a rooftop lounge. Walking distance to Yaya Centre and major hospitals.",
-            "amenities": ["Parking", "Security", "Water 24/7", "Backup Generator", "Rooftop Lounge", "Gym"],
+            "amenities": [
+              "Parking",
+              "Security",
+              "Water 24/7",
+              "Backup Generator",
+              "Rooftop Lounge",
+              "Gym"
+            ],
             "images": [
               "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
               "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
@@ -53,8 +79,16 @@
             "bathrooms": 3,
             "size": 220,
             "estate": "Nyali Sands Estate",
+            "estateId": "est-002",
             "description": "An exquisite beachfront villa with panoramic ocean views. Features a private garden, outdoor terrace, modern kitchen, en-suite bedrooms, and direct beach access. Perfect for families seeking a luxurious coastal lifestyle.",
-            "amenities": ["Private Garden", "Beach Access", "Swimming Pool", "Security", "Parking", "Staff Quarters"],
+            "amenities": [
+              "Private Garden",
+              "Beach Access",
+              "Swimming Pool",
+              "Security",
+              "Parking",
+              "Staff Quarters"
+            ],
             "images": [
               "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
               "https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=800&h=600&fit=crop",
@@ -71,8 +105,15 @@
             "bathrooms": 1,
             "size": 45,
             "estate": "Westlands Square",
+            "estateId": "est-004",
             "description": "A well-designed studio apartment ideal for young professionals. Smart use of space with a built-in wardrobe, modern kitchenette, high-speed fibre internet, and 24-hour security. Minutes from Westlands CBD and night life.",
-            "amenities": ["Fibre Internet", "Security", "Water 24/7", "Lift Access", "Parking"],
+            "amenities": [
+              "Fibre Internet",
+              "Security",
+              "Water 24/7",
+              "Lift Access",
+              "Parking"
+            ],
             "images": [
               "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
               "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&h=600&fit=crop",
@@ -89,8 +130,16 @@
             "bathrooms": 2,
             "size": 180,
             "estate": "Karen Meadows",
+            "estateId": "est-003",
             "description": "A spacious family home set within a serene gated community in Karen. Boasts a large private garden, children's play area, open-plan living and dining, a well-equipped kitchen, and direct access to walking trails.",
-            "amenities": ["Private Garden", "Parking", "Security", "Children's Play Area", "Borehole Water", "Solar Power"],
+            "amenities": [
+              "Private Garden",
+              "Parking",
+              "Security",
+              "Children's Play Area",
+              "Borehole Water",
+              "Solar Power"
+            ],
             "images": [
               "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop",
               "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
@@ -107,8 +156,16 @@
             "bathrooms": 3,
             "size": 200,
             "estate": "Upperhill Towers",
+            "estateId": "est-005",
             "description": "A sky-high penthouse offering breathtaking 360° views of Nairobi. Features floor-to-ceiling windows, a private terrace, designer kitchen, smart home automation, and exclusive access to a residents-only rooftop infinity pool.",
-            "amenities": ["Private Terrace", "Smart Home", "Infinity Pool", "Concierge", "Two Parking Slots", "Gym"],
+            "amenities": [
+              "Private Terrace",
+              "Smart Home",
+              "Infinity Pool",
+              "Concierge",
+              "Two Parking Slots",
+              "Gym"
+            ],
             "images": [
               "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
               "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&h=600&fit=crop",
@@ -125,8 +182,15 @@
             "bathrooms": 1,
             "size": 65,
             "estate": "Thika Green Valley",
+            "estateId": "est-006",
             "description": "A comfortable and affordable 2-bedroom apartment in the growing Thika town. Features a spacious living area, fitted kitchen, reliable water supply, secure compound with CCTV, and easy access to Thika Superhighway.",
-            "amenities": ["CCTV Security", "Parking", "Water 24/7", "Tarmac Access", "Shop on Ground Floor"],
+            "amenities": [
+              "CCTV Security",
+              "Parking",
+              "Water 24/7",
+              "Tarmac Access",
+              "Shop on Ground Floor"
+            ],
             "images": [
               "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=800&h=600&fit=crop",
               "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&h=600&fit=crop",
@@ -142,15 +206,47 @@
             "location": "Kilimani, Nairobi",
             "city": "Nairobi",
             "logo": "🏢",
+            "rentAmount": 45000,
+            "paymentMethods": ["M-Pesa", "Bank Transfer", "Card Payment"],
             "events": [
-              { "id": 1, "title": "Community Clean-Up Day", "date": "2026-05-20", "location": "Estate Grounds" },
-              { "id": 2, "title": "Annual General Meeting", "date": "2026-05-25", "location": "Community Hall" },
-              { "id": 3, "title": "Residents BBQ Night",    "date": "2026-06-01", "location": "Swimming Pool Area" }
+              {
+                "id": 1,
+                "title": "Community Clean-Up Day",
+                "date": "2026-05-20",
+                "location": "Estate Grounds"
+              },
+              {
+                "id": 2,
+                "title": "Annual General Meeting",
+                "date": "2026-05-25",
+                "location": "Community Hall"
+              },
+              {
+                "id": 3,
+                "title": "Residents BBQ Night",
+                "date": "2026-06-01",
+                "location": "Swimming Pool Area"
+              }
             ],
             "announcements": [
-              { "id": 1, "title": "Water Maintenance Schedule", "date": "2026-05-15", "content": "Water will be off on Saturday from 8AM–2PM" },
-              { "id": 2, "title": "New Security Measures",      "date": "2026-05-12", "content": "Enhanced access control system installed at all gates" },
-              { "id": 3, "title": "Garbage Collection Update",  "date": "2026-05-10", "content": "Collection now happens on Tuesday and Friday mornings" }
+              {
+                "id": 1,
+                "title": "Water Maintenance Schedule",
+                "date": "2026-05-15",
+                "content": "Water will be off on Saturday from 8AM–2PM"
+              },
+              {
+                "id": 2,
+                "title": "New Security Measures",
+                "date": "2026-05-12",
+                "content": "Enhanced access control system installed at all gates"
+              },
+              {
+                "id": 3,
+                "title": "Garbage Collection Update",
+                "date": "2026-05-10",
+                "content": "Collection now happens on Tuesday and Friday mornings"
+              }
             ]
           },
           {
@@ -159,13 +255,35 @@
             "location": "Nyali, Mombasa",
             "city": "Mombasa",
             "logo": "🌊",
+            "rentAmount": 120000,
+            "paymentMethods": ["M-Pesa", "Bank Transfer"],
             "events": [
-              { "id": 1, "title": "Beach Cleanup Drive",    "date": "2026-05-22", "location": "Beach Front" },
-              { "id": 2, "title": "Sundowner Social Night", "date": "2026-06-05", "location": "Pool Deck" }
+              {
+                "id": 1,
+                "title": "Beach Cleanup Drive",
+                "date": "2026-05-22",
+                "location": "Beach Front"
+              },
+              {
+                "id": 2,
+                "title": "Sundowner Social Night",
+                "date": "2026-06-05",
+                "location": "Pool Deck"
+              }
             ],
             "announcements": [
-              { "id": 1, "title": "Pool Maintenance",    "date": "2026-05-18", "content": "Pool will be closed for maintenance on 20th May" },
-              { "id": 2, "title": "Parking Allocation",  "date": "2026-05-14", "content": "New parking bays allocated — check notice board for your slot" }
+              {
+                "id": 1,
+                "title": "Pool Maintenance",
+                "date": "2026-05-18",
+                "content": "Pool will be closed for maintenance on 20th May"
+              },
+              {
+                "id": 2,
+                "title": "Parking Allocation",
+                "date": "2026-05-14",
+                "content": "New parking bays allocated — check notice board for your slot"
+              }
             ]
           },
           {
@@ -174,20 +292,51 @@
             "location": "Karen, Nairobi",
             "city": "Nairobi",
             "logo": "🌿",
+            "rentAmount": 95000,
+            "paymentMethods": [
+              "M-Pesa",
+              "Bank Transfer",
+              "Card Payment",
+              "Cash"
+            ],
             "events": [
-              { "id": 1, "title": "Garden Party",         "date": "2026-05-24", "location": "Common Garden" },
-              { "id": 2, "title": "Kids' Sports Day",     "date": "2026-06-07", "location": "Play Ground" }
+              {
+                "id": 1,
+                "title": "Garden Party",
+                "date": "2026-05-24",
+                "location": "Common Garden"
+              },
+              {
+                "id": 2,
+                "title": "Kids' Sports Day",
+                "date": "2026-06-07",
+                "location": "Play Ground"
+              }
             ],
             "announcements": [
-              { "id": 1, "title": "Landscaping Works",    "date": "2026-05-16", "content": "Garden landscaping scheduled for next week — expect some noise" },
-              { "id": 2, "title": "Gate Access Update",   "date": "2026-05-11", "content": "New biometric access installed at main gate" }
+              {
+                "id": 1,
+                "title": "Landscaping Works",
+                "date": "2026-05-16",
+                "content": "Garden landscaping scheduled for next week — expect some noise"
+              },
+              {
+                "id": 2,
+                "title": "Gate Access Update",
+                "date": "2026-05-11",
+                "content": "New biometric access installed at main gate"
+              }
             ]
           }
         ],
 
         "locationOptions": [
-          "Nairobi", "Mombasa", "Kisumu",
-          "Nakuru", "Eldoret", "Thika"
+          "Nairobi",
+          "Mombasa",
+          "Kisumu",
+          "Nakuru",
+          "Eldoret",
+          "Thika"
         ],
 
         "contact": {
@@ -197,10 +346,10 @@
         },
 
         "social": {
-          "facebook":  "https://facebook.com/communest",
-          "twitter":   "https://twitter.com/communest",
+          "facebook": "https://facebook.com/communest",
+          "twitter": "https://twitter.com/communest",
           "instagram": "https://instagram.com/communest",
-          "linkedin":  "https://linkedin.com/company/communest"
+          "linkedin": "https://linkedin.com/company/communest"
         },
 
         "heroContent": {
@@ -229,10 +378,26 @@
 
         "aboutFeatures": {
           "trust": [
-            { "icon": "🛡️", "title": "Verified Listings",  "text": "All properties are verified to ensure authenticity and quality, protecting you from scams." },
-            { "icon": "⏰", "title": "24/7 Support",        "text": "Our customer support team is always available to assist you with any queries or issues." },
-            { "icon": "👥", "title": "Community Focus",     "text": "Build connections with fellow residents through events, announcements, and community features." },
-            { "icon": "🏆", "title": "Trusted Platform",    "text": "Thousands of satisfied customers across Kenya trust Communest for their housing needs." }
+            {
+              "icon": "🛡️",
+              "title": "Verified Listings",
+              "text": "All properties are verified to ensure authenticity and quality, protecting you from scams."
+            },
+            {
+              "icon": "⏰",
+              "title": "24/7 Support",
+              "text": "Our customer support team is always available to assist you with any queries or issues."
+            },
+            {
+              "icon": "👥",
+              "title": "Community Focus",
+              "text": "Build connections with fellow residents through events, announcements, and community features."
+            },
+            {
+              "icon": "🏆",
+              "title": "Trusted Platform",
+              "text": "Thousands of satisfied customers across Kenya trust Communest for their housing needs."
+            }
           ],
           "forHunters": [
             "Browse thousands of verified properties across Kenya",
@@ -268,7 +433,7 @@
 
     <script>
       window.APP_DATA = JSON.parse(
-        document.getElementById('app-data').textContent
+        document.getElementById("app-data").textContent,
       );
     </script>
 

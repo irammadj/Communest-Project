@@ -161,6 +161,39 @@ const ArrowLeftIcon = () => (
   </svg>
 );
 
+const SendIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="m22 2-7 20-4-9-9-4Z"></path>
+    <path d="M22 2 11 13"></path>
+  </svg>
+);
+
+const MessageCircleIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+  </svg>
+);
+
 const FacebookIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -218,6 +251,108 @@ const LinkedinIcon = () => (
 function CardIcon({ name }) {
   if (name === "building") return <Building2Icon />;
   return <HomeIcon />;
+}
+
+// ─── Chatbot Component ────────────────────────────────────────────────────────
+
+function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      sender: "bot",
+      text: "Hi! 👋 I'm your Communest assistant. How can I help you today?",
+    },
+  ]);
+  const [input, setInput] = useState("");
+
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const userMessage = { sender: "user", text: input };
+    setMessages([...messages, userMessage]);
+
+    // Simulate bot response
+    setTimeout(() => {
+      const botResponse = getBotResponse(input.toLowerCase());
+      setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
+    }, 800);
+
+    setInput("");
+  };
+
+  const getBotResponse = (message) => {
+    if (
+      message.includes("price") ||
+      message.includes("cost") ||
+      message.includes("rent")
+    ) {
+      return "Our properties range from KES 22,000 to KES 150,000 per month depending on location and amenities. Would you like to see available properties?";
+    }
+    if (message.includes("location") || message.includes("where")) {
+      return "We have properties in Nairobi, Mombasa, Kisumu, Nakuru, Eldoret, Thika, Kitale, and Malindi. Which city interests you?";
+    }
+    if (message.includes("apply") || message.includes("rent")) {
+      return "To apply for a property, browse our Estates page, select a property, and click 'Apply for Rent'. You'll fill out a simple form and the estate management will contact you!";
+    }
+    if (message.includes("payment") || message.includes("pay")) {
+      return "We support M-Pesa, Bank Transfer, and Card Payments for rent and bills. Payments are processed securely through your estate portal.";
+    }
+    if (message.includes("tenant") || message.includes("portal")) {
+      return "As a tenant, you get access to your estate's portal with announcements, events, payment options, and the ability to submit inquiries directly to management.";
+    }
+    if (message.includes("list") || message.includes("manage")) {
+      return "Estate managers can list properties by clicking 'List Your Estate' on the Estates page. After approval, you'll get a dedicated portal to manage tenants, post announcements, and track payments.";
+    }
+    if (message.includes("hello") || message.includes("hi")) {
+      return "Hello! 😊 I'm here to help you with property searches, applications, payments, and any questions about Communest. What would you like to know?";
+    }
+    return "I'm here to help! You can ask me about property prices, locations, how to apply for rent, payment methods, or tenant/manager portals. What would you like to know?";
+  };
+
+  return (
+    <div className="chatbot-container">
+      {!isOpen && (
+        <button className="chatbot-toggle" onClick={() => setIsOpen(true)}>
+          <MessageCircleIcon />
+        </button>
+      )}
+
+      {isOpen && (
+        <div className="chatbot-window">
+          <div className="chatbot-header">
+            <h3>🤖 Communest Assistant</h3>
+            <button className="chatbot-close" onClick={() => setIsOpen(false)}>
+              <XIcon />
+            </button>
+          </div>
+
+          <div className="chatbot-messages">
+            {messages.map((msg, i) => (
+              <div key={i} className={`chatbot-message ${msg.sender}`}>
+                <div className="chatbot-avatar">
+                  {msg.sender === "bot" ? "🤖" : "👤"}
+                </div>
+                <div className="chatbot-bubble">{msg.text}</div>
+              </div>
+            ))}
+          </div>
+
+          <form className="chatbot-input-area" onSubmit={handleSend}>
+            <input
+              type="text"
+              placeholder="Type your message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <button type="submit" className="chatbot-send">
+              <SendIcon />
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
@@ -312,12 +447,10 @@ function Navbar({ currentPage, setCurrentPage }) {
 }
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
-// Popular Locations removed from here per request
 
 function HomePage({ setCurrentPage }) {
   return (
     <div>
-      {/* Hero */}
       <section className="hero">
         <div className="container">
           <h1>
@@ -352,7 +485,6 @@ function HomePage({ setCurrentPage }) {
         </div>
       </section>
 
-      {/* Why Choose Us */}
       <section className="section section-alt">
         <div className="container">
           <h2>Why Choose Communest?</h2>
@@ -374,7 +506,6 @@ function HomePage({ setCurrentPage }) {
         </div>
       </section>
 
-      {/* CTA */}
       <section
         className="section"
         style={{
@@ -482,7 +613,6 @@ function RentalApplicationPage({ house, onBack }) {
   return (
     <div className="section">
       <div className="container">
-        {/* Back button */}
         <button
           className="btn btn-gray"
           onClick={onBack}
@@ -503,9 +633,7 @@ function RentalApplicationPage({ house, onBack }) {
             gap: "2rem",
           }}
         >
-          {/* Left — Photos + Details */}
           <div>
-            {/* Image gallery */}
             <div
               style={{
                 borderRadius: "var(--radius-lg)",
@@ -562,7 +690,6 @@ function RentalApplicationPage({ house, onBack }) {
               ))}
             </div>
 
-            {/* Property details */}
             <div className="card" style={{ marginBottom: "1rem" }}>
               <h1
                 style={{
@@ -588,7 +715,6 @@ function RentalApplicationPage({ house, onBack }) {
                 <MapPinIcon /> {house.location} — {house.estate}
               </p>
 
-              {/* Price */}
               <div
                 style={{
                   display: "inline-block",
@@ -617,7 +743,6 @@ function RentalApplicationPage({ house, onBack }) {
                 </span>
               </div>
 
-              {/* Features row */}
               <div
                 style={{
                   display: "flex",
@@ -664,7 +789,6 @@ function RentalApplicationPage({ house, onBack }) {
                 ))}
               </div>
 
-              {/* Description */}
               <h3
                 style={{
                   fontSize: "0.9rem",
@@ -686,7 +810,6 @@ function RentalApplicationPage({ house, onBack }) {
               </p>
             </div>
 
-            {/* Amenities */}
             <div className="card">
               <h3
                 style={{
@@ -719,7 +842,6 @@ function RentalApplicationPage({ house, onBack }) {
             </div>
           </div>
 
-          {/* Right — Application Form */}
           <div>
             <div className="card" style={{ position: "sticky", top: "80px" }}>
               <h2
@@ -834,15 +956,21 @@ function RentalApplicationPage({ house, onBack }) {
   );
 }
 
-// ─── Estate Section (tenant-only portal for an approved estate) ───────────────
+// ─── Estate Section (tenant portal with payments) ─────────────────────────────
 
 function EstateSectionPage({ estate, onBack }) {
   const [activeTab, setActiveTab] = useState("announcements");
   const [submitted, setSubmitted] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [inquiry, setInquiry] = useState({
     type: "Inquiry",
     subject: "",
     message: "",
+  });
+  const [payment, setPayment] = useState({
+    amount: estate.rentAmount || 0,
+    method: estate.paymentMethods ? estate.paymentMethods[0] : "M-Pesa",
+    reference: "",
   });
 
   const handleInquirySubmit = (e) => {
@@ -851,10 +979,15 @@ function EstateSectionPage({ estate, onBack }) {
     setSubmitted(true);
   };
 
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault();
+    if (!payment.amount || !payment.reference) return;
+    setPaymentSuccess(true);
+  };
+
   return (
     <div className="section">
       <div className="container">
-        {/* Back */}
         <button
           className="btn btn-gray"
           onClick={onBack}
@@ -868,7 +1001,6 @@ function EstateSectionPage({ estate, onBack }) {
           <ArrowLeftIcon /> Back to Estates
         </button>
 
-        {/* Estate header */}
         <div
           className="card"
           style={{
@@ -934,11 +1066,11 @@ function EstateSectionPage({ estate, onBack }) {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="tab-buttons mb-4">
           {[
             { key: "announcements", label: "🔔 Announcements" },
             { key: "events", label: "📅 Events" },
+            { key: "payments", label: "💳 Payments" },
             { key: "inquiry", label: "📝 Send Inquiry" },
           ].map(({ key, label }) => (
             <button
@@ -947,6 +1079,7 @@ function EstateSectionPage({ estate, onBack }) {
               onClick={() => {
                 setActiveTab(key);
                 setSubmitted(false);
+                setPaymentSuccess(false);
               }}
             >
               {label}
@@ -954,7 +1087,6 @@ function EstateSectionPage({ estate, onBack }) {
           ))}
         </div>
 
-        {/* Announcements */}
         {activeTab === "announcements" && (
           <div>
             <h2
@@ -1017,7 +1149,6 @@ function EstateSectionPage({ estate, onBack }) {
           </div>
         )}
 
-        {/* Events */}
         {activeTab === "events" && (
           <div>
             <h2
@@ -1103,7 +1234,161 @@ function EstateSectionPage({ estate, onBack }) {
           </div>
         )}
 
-        {/* Inquiry */}
+        {activeTab === "payments" && (
+          <div style={{ maxWidth: 560 }}>
+            {paymentSuccess ? (
+              <div className="card" style={{ textAlign: "center" }}>
+                <div style={{ fontSize: "3rem", marginBottom: "0.75rem" }}>
+                  ✅
+                </div>
+                <h3
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 700,
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Payment Successful!
+                </h3>
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.875rem",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Your payment of{" "}
+                  <strong style={{ color: "var(--accent-light)" }}>
+                    KES {payment.amount.toLocaleString()}
+                  </strong>{" "}
+                  via {payment.method} has been received.
+                </p>
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: "0.8rem",
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  Reference: {payment.reference}
+                </p>
+                <button
+                  className="btn btn-gray"
+                  onClick={() => setPaymentSuccess(false)}
+                >
+                  Make Another Payment
+                </button>
+              </div>
+            ) : (
+              <div className="card">
+                <h2
+                  style={{
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                    letterSpacing: "-0.03em",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Pay Rent & Bills
+                </h2>
+                <p
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.85rem",
+                    marginBottom: "1.5rem",
+                  }}
+                >
+                  Make secure payments directly to {estate.name} management.
+                </p>
+
+                <form onSubmit={handlePaymentSubmit}>
+                  <div className="form-group">
+                    <label className="form-label">
+                      Payment Method <span style={{ color: "#f87171" }}>*</span>
+                    </label>
+                    <select
+                      className="form-select"
+                      value={payment.method}
+                      onChange={(e) =>
+                        setPayment({ ...payment, method: e.target.value })
+                      }
+                    >
+                      {estate.paymentMethods &&
+                        estate.paymentMethods.map((method) => (
+                          <option key={method}>{method}</option>
+                        ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">
+                      Amount (KES) <span style={{ color: "#f87171" }}>*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      placeholder="Enter amount"
+                      value={payment.amount}
+                      onChange={(e) =>
+                        setPayment({
+                          ...payment,
+                          amount: parseInt(e.target.value) || 0,
+                        })
+                      }
+                      required
+                    />
+                    {estate.rentAmount && (
+                      <p
+                        style={{
+                          color: "var(--text-muted)",
+                          fontSize: "0.78rem",
+                          marginTop: "0.3rem",
+                        }}
+                      >
+                        Suggested: KES {estate.rentAmount.toLocaleString()}{" "}
+                        (monthly rent)
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">
+                      Payment Reference / Transaction ID{" "}
+                      <span style={{ color: "#f87171" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g., M-Pesa code or transaction ID"
+                      value={payment.reference}
+                      onChange={(e) =>
+                        setPayment({ ...payment, reference: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+
+                  <button type="submit" className="btn btn-green btn-full">
+                    💳 Submit Payment
+                  </button>
+
+                  <p
+                    style={{
+                      color: "var(--text-muted)",
+                      fontSize: "0.78rem",
+                      textAlign: "center",
+                      marginTop: "0.75rem",
+                    }}
+                  >
+                    🔒 All payments are processed securely and sent directly to
+                    estate management.
+                  </p>
+                </form>
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === "inquiry" && (
           <div style={{ maxWidth: 560 }}>
             {submitted ? (
@@ -1213,13 +1498,12 @@ function EstateSectionPage({ estate, onBack }) {
 // ─── Estates Page ─────────────────────────────────────────────────────────────
 
 function EstatesPage() {
-  const [mainTab, setMainTab] = useState("properties"); // "properties" | "myEstate" | "list"
+  const [mainTab, setMainTab] = useState("properties");
   const [selectedCity, setSelectedCity] = useState("");
   const [showListingForm, setShowListingForm] = useState(false);
-  const [selectedHouse, setSelectedHouse] = useState(null); // → rental application page
-  const [selectedEstate, setSelectedEstate] = useState(null); // → estate section page
+  const [selectedHouse, setSelectedHouse] = useState(null);
+  const [selectedEstate, setSelectedEstate] = useState(null);
 
-  // If a house is selected, show the rental application page
   if (selectedHouse) {
     return (
       <RentalApplicationPage
@@ -1229,7 +1513,6 @@ function EstatesPage() {
     );
   }
 
-  // If an estate section is selected, show the estate portal
   if (selectedEstate) {
     return (
       <EstateSectionPage
@@ -1239,7 +1522,6 @@ function EstatesPage() {
     );
   }
 
-  // Filter houses by city
   const filteredHouses = selectedCity
     ? vacantHouses.filter((h) => h.city === selectedCity)
     : vacantHouses;
@@ -1258,22 +1540,27 @@ function EstatesPage() {
           Estates
         </h1>
 
-        {/* Main Tabs */}
         <div className="tab-buttons mb-4">
           <button
             className={`btn ${mainTab === "properties" ? "btn-blue" : "btn-gray"}`}
-            onClick={() => setMainTab("properties")}
+            onClick={() => {
+              setMainTab("properties");
+              setShowListingForm(false);
+            }}
           >
             🏠 View Properties
           </button>
           <button
             className={`btn ${mainTab === "myEstate" ? "btn-blue" : "btn-gray"}`}
-            onClick={() => setMainTab("myEstate")}
+            onClick={() => {
+              setMainTab("myEstate");
+              setShowListingForm(false);
+            }}
           >
             🔒 My Estate
           </button>
           <button
-            className={`btn ${showListingForm ? "btn-green" : "btn-green"}`}
+            className="btn btn-green"
             onClick={() => {
               setShowListingForm(!showListingForm);
               setMainTab("list");
@@ -1283,7 +1570,6 @@ function EstatesPage() {
           </button>
         </div>
 
-        {/* ── List Estate Form ── */}
         {showListingForm && (
           <div className="card mb-4">
             <h2
@@ -1296,7 +1582,6 @@ function EstatesPage() {
             >
               List Your Estate
             </h2>
-            {/* Price field intentionally removed per request */}
             <form>
               <div className="form-row">
                 <div className="form-group">
@@ -1378,26 +1663,22 @@ function EstatesPage() {
           </div>
         )}
 
-        {/* ── View Properties Tab ── */}
-        {mainTab === "properties" && (
+        {mainTab === "properties" && !showListingForm && (
           <div>
-            {/* Location filter — radio buttons, optional */}
             <div className="card mb-4" style={{ padding: "1.25rem 1.5rem" }}>
               <h3
                 style={{
                   fontSize: "0.9rem",
                   fontWeight: 600,
-                  color: "var(--text-primary)",
+                  color: "var(--text-muted)",
                   marginBottom: "0.85rem",
                   letterSpacing: "0.02em",
                   textTransform: "uppercase",
-                  color: "var(--text-muted)",
                 }}
               >
                 Filter by Location (optional)
               </h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
-                {/* "All" option */}
                 <label
                   style={{
                     display: "inline-flex",
@@ -1427,7 +1708,6 @@ function EstatesPage() {
                           ? "var(--text-primary)"
                           : "var(--text-secondary)",
                       fontWeight: selectedCity === "" ? 600 : 400,
-                      transition: "color 0.2s",
                     }}
                   >
                     All Cities
@@ -1472,7 +1752,6 @@ function EstatesPage() {
                             ? "var(--accent-light)"
                             : "var(--text-secondary)",
                         fontWeight: selectedCity === city ? 600 : 400,
-                        transition: "color 0.2s",
                       }}
                     >
                       {city}
@@ -1482,7 +1761,6 @@ function EstatesPage() {
               </div>
             </div>
 
-            {/* Property grid */}
             <h2
               style={{
                 textAlign: "left",
@@ -1553,7 +1831,6 @@ function EstatesPage() {
                           KES {house.price.toLocaleString()}
                           <small>/mo</small>
                         </div>
-                        {/* "View" → "Apply for Rent" */}
                         <button
                           className="btn btn-green"
                           style={{
@@ -1573,10 +1850,8 @@ function EstatesPage() {
           </div>
         )}
 
-        {/* ── My Estate Tab — tenant portal for approved estates ── */}
-        {mainTab === "myEstate" && (
+        {mainTab === "myEstate" && !showListingForm && (
           <div>
-            {/* Explainer banner */}
             <div
               style={{
                 background: "rgba(59,130,246,0.07)",
@@ -1609,9 +1884,9 @@ function EstatesPage() {
                   }}
                 >
                   This section lists all approved estates on Communest. Each
-                  estate's portal (announcements, events, and inquiries) is
-                  visible only to registered tenants of that estate. Outsiders
-                  can view the estate name and location only.
+                  estate's portal (announcements, events, payments, and
+                  inquiries) is visible only to registered tenants of that
+                  estate.
                 </p>
               </div>
             </div>
@@ -1728,8 +2003,8 @@ function EstatesPage() {
                 marginTop: "1.5rem",
               }}
             >
-              🔑 Full portal access (announcements, events, inquiries) requires
-              signing in with your estate account.
+              🔑 Full portal access (announcements, events, payments, inquiries)
+              requires signing in with your estate account.
             </p>
           </div>
         )}
@@ -1781,7 +2056,6 @@ function AboutPage() {
               fontWeight: 700,
               letterSpacing: "-0.035em",
               marginBottom: "1rem",
-              textAlign: "center",
             }}
           >
             Our Mission
@@ -2194,6 +2468,7 @@ function App() {
       {currentPage === "about" && <AboutPage />}
       {currentPage === "auth" && <AuthPage />}
       <Footer setCurrentPage={setCurrentPage} />
+      <Chatbot />
     </div>
   );
 }
